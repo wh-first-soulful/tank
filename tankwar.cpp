@@ -5,10 +5,11 @@
 
 #include "subwindow.h"
 using namespace std;
+#include"parameters.h"
 
-#include "parameters.h"
 
-int* Map::map= new int[LENGTH*WIDTH];
+int Map::map[WIDTH][LENGTH]={};
+
 
 Bullet::Bullet()
 {
@@ -21,40 +22,41 @@ bool Bullet::move()
 {
     if (pre_x)
     {
-        if (Map::map[pre_y*LENGTH + pre_x]>=30)//bullet
+        if (Map::map[pre_y][pre_x] >= 30) // bullet
         {
-            Map::map[pre_y*LENGTH + pre_x] = 0;
-            Map::map[pre_y*LENGTH + pre_x] = 0;
+            Map::map[pre_y][pre_x] = 0;
         }
     }
-    int pos = LENGTH*pos_y + pos_x;
-    switch (Map::map[pos])
+
+    int pos = Map::map[pos_y][pos_x];
+    switch (pos)
     {
     case EMPTY:
-        Map::map[pos_y*LENGTH + pos_x] = master+20;
+        Map::map[pos_y][pos_x] = master + 20;
         break;
     case BRICK_WALL:
         if (pos_x <= 0 || pos_x >= LENGTH - 1 || pos_y <= 0 || pos_y >= WIDTH - 1)
-            return 0;
-        Map::map[pos] = 0;
-        return 0;
+            return false;
+        Map::map[pos_y][pos_x] = 0;
+        return false;
     case STEEL_WALL:
         if (type == 2)
-            Map::map[pos] = 0;
-        return 0;
+            Map::map[pos_y][pos_x] = 0;
+        return false;
     case STAR:
-        Map::map[pos] = 0;
-        return 0;
+        Map::map[pos_y][pos_x] = 0;
+        return false;
     case SEA:
-        return 0;
+        return false;
     case FOREST:
         break;
     default:
-        hurt_id = Map::map[pos];
-        if (hurt_id >= 30)//bullet
-            Map::map[pos] = 0;
-        return 0;
+        hurt_id = pos;
+        if (hurt_id >= 30) // bullet
+            Map::map[pos_y][pos_x] = 0;
+        return false;
     }
+
     pre_x = pos_x;
     pre_y = pos_y;
     switch (dir)
@@ -68,13 +70,14 @@ bool Bullet::move()
     case right:
         pos_x += 1; break;
     default:
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
+
 void Bullet::delete_bullet()
 {
-    Map::map[LENGTH*pos_y + pos_x] = EMPTY;
+    Map::map[pos_y][pos_x] = EMPTY;
 }
 
 Tank::Tank()
@@ -91,92 +94,97 @@ Tank::Tank(int t, int x, int y, int i)
 }
 void Tank::basic_move()
 {
-    int pre_x=pos_x;
-    int pre_y=pos_y;
+    int pre_x = pos_x;
+    int pre_y = pos_y;
+
     switch (dir)
     {
     case up:
-        if ((Map::map[LENGTH*(pos_y - 2) + pos_x] == 0|| Map::map[LENGTH*(pos_y - 2) + pos_x] == FOREST) &&
-            (Map::map[LENGTH*(pos_y - 2) + pos_x - 1] == 0|| Map::map[LENGTH*(pos_y - 2) + pos_x - 1] == FOREST) &&
-            (Map::map[LENGTH*(pos_y - 2) + pos_x + 1] == 0|| Map::map[LENGTH*(pos_y - 2) + pos_x + 1] == FOREST))
+        if ((Map::map[pos_y - 2][pos_x] == 0 || Map::map[pos_y - 2][pos_x] == FOREST) &&
+                (Map::map[pos_y - 2][pos_x - 1] == 0 || Map::map[pos_y - 2][pos_x - 1] == FOREST) &&
+                (Map::map[pos_y - 2][pos_x + 1] == 0 || Map::map[pos_y - 2][pos_x + 1] == FOREST))
             pos_y--;
         break;
     case down:
-        if ((Map::map[LENGTH*(pos_y + 2) + pos_x] == 0 || Map::map[LENGTH*(pos_y + 2) + pos_x] == FOREST) &&
-            (Map::map[LENGTH*(pos_y + 2) + pos_x - 1] == 0 || Map::map[LENGTH*(pos_y + 2) + pos_x - 1] == FOREST) &&
-            (Map::map[LENGTH*(pos_y + 2) + pos_x + 1] == 0 || Map::map[LENGTH*(pos_y + 2) + pos_x + 1] == FOREST))
+        if ((Map::map[pos_y + 2][pos_x] == 0 || Map::map[pos_y + 2][pos_x] == FOREST) &&
+                (Map::map[pos_y + 2][pos_x - 1] == 0 || Map::map[pos_y + 2][pos_x - 1] == FOREST) &&
+                (Map::map[pos_y + 2][pos_x + 1] == 0 || Map::map[pos_y + 2][pos_x + 1] == FOREST))
             pos_y++;
         break;
     case left:
-        if ((Map::map[LENGTH*pos_y + pos_x-2] == 0 || Map::map[LENGTH*pos_y + pos_x-2] == FOREST) &&
-            (Map::map[LENGTH*(pos_y - 1) + pos_x - 2] == 0 || Map::map[LENGTH*(pos_y - 1) + pos_x - 2] == FOREST) &&
-            (Map::map[LENGTH*(pos_y + 1) + pos_x - 2] == 0 || Map::map[LENGTH*(pos_y + 1) + pos_x - 2] == FOREST))
+        if ((Map::map[pos_y][pos_x - 2] == 0 || Map::map[pos_y][pos_x - 2] == FOREST) &&
+                (Map::map[pos_y - 1][pos_x - 2] == 0 || Map::map[pos_y - 1][pos_x - 2] == FOREST) &&
+                (Map::map[pos_y + 1][pos_x - 2] == 0 || Map::map[pos_y + 1][pos_x - 2] == FOREST))
             pos_x -= 1;
         break;
     case right:
-        if ((Map::map[LENGTH*pos_y + pos_x+2] == 0 || Map::map[LENGTH*pos_y + pos_x+2] == FOREST) &&
-            (Map::map[LENGTH*(pos_y - 1) + pos_x +2] == 0 || Map::map[LENGTH*(pos_y - 1) + pos_x - 2] == FOREST) &&
-            (Map::map[LENGTH*(pos_y + 1) + pos_x +2] == 0 || Map::map[LENGTH*(pos_y + 1) + pos_x + 2] == FOREST))
+        if ((Map::map[pos_y][pos_x + 2] == 0 || Map::map[pos_y][pos_x + 2] == FOREST) &&
+                (Map::map[pos_y - 1][pos_x + 2] == 0 || Map::map[pos_y - 1][pos_x + 2] == FOREST) &&
+                (Map::map[pos_y + 1][pos_x + 2] == 0 || Map::map[pos_y + 1][pos_x + 2] == FOREST))
             pos_x += 1;
         break;
     default:;
     }
 
-
-    if (pre_x!=pos_x||pre_y!=pos_y)
+    if (pre_x != pos_x || pre_y != pos_y)
     {
         for (int i = pre_x - 1; i <= pre_x + 1; i++)
             for (int j = pre_y - 1; j <= pre_y + 1; j++)
             {
-                if ((i>0&&i<LENGTH-1&&j>0&&j<WIDTH-1)&&Map::map[j*LENGTH + i] != FOREST)
+                if ((i > 0 && i < LENGTH - 1 && j > 0 && j < WIDTH - 1) && Map::map[j][i] != FOREST)
                 {
-                    Map::map[j*LENGTH + i] =0;
+                    Map::map[j][i] = 0;
                 }
             }
     }
+
     for (int i = pos_x - 1; i <= pos_x + 1; i++)
         for (int j = pos_y - 1; j <= pos_y + 1; j++)
-            if(Map::map[j*LENGTH + i]!=FOREST&&(i!=pos_x||j!=pos_y)&&(i>0&&i<LENGTH-1&&j>0&&j<WIDTH-1))
-                Map::map[j*LENGTH + i] = id;
-    if(Map::map[pos_y*LENGTH + pos_x]!=FOREST)
+            if (Map::map[j][i] != FOREST && (i != pos_x || j != pos_y) && (i > 0 && i < LENGTH - 1 && j > 0 && j < WIDTH - 1))
+                Map::map[j][i] = id;
+
+    if (Map::map[pos_y][pos_x] != FOREST)
     {
-        switch(pre_dir)
+        switch (pre_dir)
         {
         case up:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_UP;break;
+            Map::map[pos_y][pos_x] = TANK1_UP; break;
         case down:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_DN;break;
+            Map::map[pos_y][pos_x] = TANK1_DN; break;
         case left:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_LEFT;break;
+            Map::map[pos_y][pos_x] = TANK1_LEFT; break;
         case right:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_RIGHT;break;
+            Map::map[pos_y][pos_x] = TANK1_RIGHT; break;
         }
-        switch(dir)
+
+        switch (dir)
         {
         case up:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_UP;break;
+            Map::map[pos_y][pos_x] = TANK1_UP; break;
         case down:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_DN;break;
+            Map::map[pos_y][pos_x] = TANK1_DN; break;
         case left:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_LEFT;break;
+            Map::map[pos_y][pos_x] = TANK1_LEFT; break;
         case right:
-            Map::map[pos_y*LENGTH+pos_x]=TANK1_RIGHT;break;
+            Map::map[pos_y][pos_x] = TANK1_RIGHT; break;
         }
-        switch(type)
+
+        switch (type)
         {
         case 2:
-            Map::map[pos_y*LENGTH+pos_x]+=4;break;
+            Map::map[pos_y][pos_x] += 4; break;
         case 3:
-            Map::map[pos_y*LENGTH+pos_x]+=8;break;
+            Map::map[pos_y][pos_x] += 8; break;
         case 4:
-            Map::map[pos_y*LENGTH+pos_x]+=12;break;
+            Map::map[pos_y][pos_x] += 12; break;
         case 0:
-            Map::map[pos_y*LENGTH+pos_x]+=16;break;
+            Map::map[pos_y][pos_x] += 16; break;
         case -1:
-            Map::map[pos_y*LENGTH+pos_x]+=20;break;
+            Map::map[pos_y][pos_x] += 20; break;
         }
     }
 }
+
 void Tank::shoot()
 {
     if (bullets != NULL)
@@ -210,14 +218,15 @@ void Tank::delete_tank()
 {
     for (int i = pos_x - 1; i <= pos_x + 1; i++)
         for (int j = pos_y - 1; j <= pos_y + 1; j++)
-            Map::map[LENGTH*j + i] = 0;
+            Map::map[j][i] = 0;
 }
+
 
 void Enemy::move()
 {
     int choices[3][10] = { 0,right,right, right, down, down, down,left,up ,
-                         0,0,down, right,down,left,down, down, down,up,
-                         0,0,right,up,left, down,left,down, down,left };
+                           0,0,down, right,down,left,down, down, down,up,
+                           0,0,right,up,left, down,left,down, down,left };
     if (dir != 0)
         pre_dir = dir;
 
@@ -254,102 +263,105 @@ void Player::move()
 Map::Map()
 {
 
-    for (int i = 0; i < LENGTH*WIDTH; i++)
-        map[i] = EMPTY;
-    //surrending walls
+    for (int i = 0; i < WIDTH; i++)
+        for (int j = 0; j < LENGTH; j++)
+            map[i][j] = EMPTY;
+
+    // 周围的墙壁
     for (int i = 0; i < LENGTH; i++)
     {
-        map[i] = BRICK_WALL;
-        map[LENGTH*(WIDTH - 1) + i] = BRICK_WALL;
+        map[0][i] = BRICK_WALL;
+        map[WIDTH - 1][i] = BRICK_WALL;
     }
-    for (int i = 1; i < WIDTH; i++)
+    for (int i = 1; i < WIDTH - 1; i++)
     {
-        map[LENGTH*i] = BRICK_WALL;
-        map[LENGTH*(i + 1) - 1] = BRICK_WALL;
+        map[i][0] = BRICK_WALL;
+        map[i][LENGTH - 1] = BRICK_WALL;
     }
 
-    //base
-    map[LENGTH*(WIDTH - 3) + LENGTH / 2-1] = STAR;
-    map[LENGTH*(WIDTH - 3) + LENGTH / 2] = STAR;
-    map[LENGTH*(WIDTH - 2) + LENGTH / 2-1] = STAR;
-    map[LENGTH*(WIDTH - 2) + LENGTH / 2] = STAR;
-    for (int i = LENGTH / 2 - 2; i < LENGTH / 2 + 2; i ++)
-        map[LENGTH*(WIDTH - 4) + i] = BRICK_WALL;
+
+    // 基地
+    map[WIDTH - 3][LENGTH / 2 - 1] = STAR;
+    map[WIDTH - 3][LENGTH / 2] = STAR;
+    map[WIDTH - 2][LENGTH / 2 - 1] = STAR;
+    map[WIDTH - 2][LENGTH / 2] = STAR;
+    for (int i = LENGTH / 2 - 2; i < LENGTH / 2 + 2; i++)
+        map[WIDTH - 4][i] = BRICK_WALL;
     for (int i = WIDTH - 4; i < WIDTH - 1; i++)
     {
-        map[LENGTH*i + LENGTH / 2 - 2] = BRICK_WALL;
-        map[LENGTH*i + LENGTH / 2 + 1] = BRICK_WALL;
+        map[i][LENGTH / 2 - 2] = BRICK_WALL;
+        map[i][LENGTH / 2 + 1] = BRICK_WALL;
     }
-
-    //brick wall
-    for (int i = 3; i < 5; i ++)
-        for (int j = 16; j < WIDTH-1; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 10; i < 12; i ++)
-        for (int j = 26; j < WIDTH-1; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 10; i < 12; i ++)
+    // 砖墙
+    for (int i = 3; i < 5; i++)
+        for (int j = 16; j < WIDTH - 1; j++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 10; i < 12; i++)
+        for (int j = 26; j < WIDTH - 1; j++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 10; i < 12; i++)
         for (int j = 19; j < 23; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 4; i < 13; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 4; i < 13; i++)
         for (int j = 11; j < 13; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 16; i < 24; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 16; i < 24; i++)
         for (int j = 16; j < 20; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 28; i < 30; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 28; i < 30; i++)
         for (int j = 5; j < 9; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 28; i < 35; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 28; i < 35; i++)
         for (int j = 7; j < 9; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 19; i < 21; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 19; i < 21; i++)
         for (int j = 3; j < 9; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
-    for (int i = 32; i < 34; i ++)
+            map[j][i] = BRICK_WALL;
+    for (int i = 32; i < 34; i++)
         for (int j = 20; j < 26; j++)
-            map[j*LENGTH + i] = BRICK_WALL;
+            map[j][i] = BRICK_WALL;
 
-    //sea
+
+    // 海
     for (int i = 1; i < 3; i++)
-        for (int j = 18; j < WIDTH-1; j++)
-            map[j*LENGTH + i] = SEA;
+        for (int j = 18; j < WIDTH - 1; j++)
+            map[j][i] = SEA;
     for (int i = 37; i < 39; i++)
-        for (int j = 22; j < WIDTH-1; j++)
-            map[j*LENGTH + i] = SEA;
+        for (int j = 22; j < WIDTH - 1; j++)
+            map[j][i] = SEA;
 
-    //steel wall
-    for (int i = 1; i < 3; i ++)
+    // 钢墙
+    for (int i = 1; i < 3; i++)
         for (int j = 16; j < 18; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 10; i < 12; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 10; i < 12; i++)
         for (int j = 15; j < 19; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 10; i < 12; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 10; i < 12; i++)
         for (int j = 1; j < 5; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
+            map[j][i] = STEEL_WALL;
     for (int i = 20; i < 22; i += 2)
         for (int j = 1; j < 3; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 26; i < 31; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 26; i < 31; i++)
         for (int j = 14; j < 16; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 28; i < 30; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 28; i < 30; i++)
         for (int j = 1; j < 5; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 24; i < 26; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 24; i < 26; i++)
         for (int j = 23; j < 25; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
-    for (int i = 17; i < 23; i ++)
+            map[j][i] = STEEL_WALL;
+    for (int i = 17; i < 23; i++)
         for (int j = 12; j < 14; j++)
-            map[j*LENGTH + i] = STEEL_WALL;
+            map[j][i] = STEEL_WALL;
 
-    //forest
+    // 森林
     for (int i = 1; i < 4; i++)
         for (int j = 4; j < 13; j++)
-            map[j*LENGTH + i] = FOREST;
-    for (int i = 10; i <16; i++)
+            map[j][i] = FOREST;
+    for (int i = 10; i < 16; i++)
         for (int j = 5; j < 7; j++)
-            map[j*LENGTH + i] = FOREST;
+            map[j][i] = FOREST;
 
 }

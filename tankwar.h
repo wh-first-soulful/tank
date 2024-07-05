@@ -5,6 +5,7 @@
 #define up 1
 #define down 2
 
+
 class Bullet
 {
     int pos_x;//子弹当前横坐标
@@ -54,7 +55,7 @@ public:
 
 class Map
 {
-    static int *map;//存储地图数据
+    static int map[30][40];//存储地图数据
 public:
     Map();//地图的初始化
     friend class subWindow;
