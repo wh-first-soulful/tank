@@ -34,10 +34,6 @@ subWindow::subWindow(QWidget *parent) :
                                    "QPushButton:hover{border-image:url(:/pic/returnline.png);}" //鼠标悬浮
                                   );
 
-
-    ui->pushButton_3->hide();
-    ui->pushButton_4->hide();
-
     //load pics
     brick.load(brick_pic);
     sea.load(sea_pic);
@@ -61,11 +57,10 @@ subWindow::subWindow(QWidget *parent) :
     tank4_dn.load(":/pic/tank4dn.png");
     tank4_left.load(":/pic/tank4left.png");
     tank4_right.load(":/pic/tank4right.png");
-     //tank5_up.load(":/pic/tankupgrade.jpg");
-    tank5_up.load(":/pic/tank5up.png");
-    tank5_dn.load(":/pic/tank5dn.png");
-    tank5_left.load(":/pic/tank5left.png");
-    tank5_right.load(":/pic/tank5right.png");
+    tank5_up.load(":/pic/tank7up.png");
+    tank5_dn.load(":/pic/tank7dn.png");
+    tank5_left.load(":/pic/tank7left.png");
+    tank5_right.load(":/pic/tank7right.png");
     tank6_up.load(":/pic/tank6up.png");
     tank6_dn.load(":/pic/tank6dn.png");
     tank6_left.load(":/pic/tank6left.png");
@@ -74,6 +69,7 @@ subWindow::subWindow(QWidget *parent) :
     tank_pic.load(":/pic/test.png");
     bomb_pic.load(":/pic/bomb.jpg");
     bullet.load(":/pic/bullet.png");
+    bullet2.load(":/pic/bullet2.jpg");
     gameover_pic.load(":/pic/win.png");
     gameover_pic.load(":/pic/gameover.png");
 
@@ -86,17 +82,20 @@ subWindow::subWindow(QWidget *parent) :
     timer2 = new QTimer(this);
     timer3 = new QTimer(this);
     timer4 = new QTimer(this);
+    timer5 = new QTimer(this);//新增的玩家坦克
 
     timer1->start(TANK_SLOW);
     timer2->start(TANK_FAST);
     timer3->start(BULLET_SLOW);
     timer4->start(BULLET_FAST);
+    timer5->start(TANK_PLAYER);
 
     connect(timer1,&QTimer::timeout,this,&subWindow::tank_move_slow);
     connect(timer2,&QTimer::timeout,this,&subWindow::tank_move_fast);
     connect(timer3,&QTimer::timeout,this,&subWindow::bullet_move_slow);
     connect(timer4,&QTimer::timeout,this,&subWindow::bullet_move_fast);
     connect(timer1,&QTimer::timeout,this,&subWindow::showgrades);
+    connect(timer5,&QTimer::timeout,this,&subWindow::tank_move_player);
 
     //connect(timer1,&QTimer::timeout,this,&subWindow::keyPressEvent);
     init();
@@ -155,7 +154,6 @@ void subWindow::on_returnclick_clicked()
     startflag=0;
     ui->pushButton->show();
     ui->pushButton_2->show();
-
     init();
 }
 
@@ -168,12 +166,6 @@ void subWindow::tank_move_slow()
             enemies[i]->move();
         }
     }
-    for(int i=0;i<2;i++)
-    {
-        if(players[i]!=NULL)
-            players[i]->move();
-
-    }
     update();
 }
 void subWindow::tank_move_fast()
@@ -184,6 +176,17 @@ void subWindow::tank_move_fast()
         {
             enemies[i]->move();
         }
+    }
+    update();
+}
+
+void subWindow::tank_move_player()
+{
+    for (int i = 0; i < 2; i++)
+    {
+        if (players[i] != NULL)
+            players[i]->move();
+
     }
     update();
 }
@@ -442,7 +445,12 @@ void subWindow::paintEvent(QPaintEvent *event)
             {
                 if(Map::map[i*LENGTH+j]>=30&&Map::map[i*LENGTH+j]<50)
                 {
-                    painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,bullet);
+                    if (Map::map[i * LENGTH + j] <40)
+                    {
+                        painter.drawPixmap(SIZE * j, SIZE * i, 30, 30, bullet);
+                    }
+                    else
+                    painter.drawPixmap(SIZE*j, SIZE*i, 20, 20,bullet2);
                 }
                 switch(Map::map[i*LENGTH+j])
                 {
@@ -493,13 +501,13 @@ void subWindow::paintEvent(QPaintEvent *event)
                 case TANK4_RIGHT:
                     painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank4_right);break;
                 case TANK5_UP:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_up);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_up);break;
                 case TANK5_DN:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_dn);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_dn);break;
                 case TANK5_LEFT:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_left);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_left);break;
                 case TANK5_RIGHT:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_right);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_right);break;
                 case TANK6_UP:
                     painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank6_up);break;
                 case TANK6_DN:
@@ -510,6 +518,8 @@ void subWindow::paintEvent(QPaintEvent *event)
                     painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank6_right);break;
                 case BULLET1:
                     painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,bullet);break;
+                //case BULLET2:
+                   // painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,bullet2); break;
                 case TOOL_TANK:
                     painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,tank_pic);break;
                 case TOOL_BOMB:
@@ -609,9 +619,9 @@ void subWindow::gameover()
 }
 void subWindow::keyPressEvent(QKeyEvent *event)
 {
-        if(players[0]!=NULL)
-        {
-            switch(event->key())
+    if(players[0]!=NULL)
+    {
+            switch (event->key())
             {
             case Qt::Key_S:
                 players[0]->dir=down;break;
@@ -622,12 +632,13 @@ void subWindow::keyPressEvent(QKeyEvent *event)
             case Qt::Key_D:
                 players[0]->dir=right;break;
             case Qt::Key_J:
-                players[0]->shoot();break;
+                players[0]->shoot(1);break;
             }
+            
             update();
-        }
-        if(players[1]!=NULL)
-        {
+    }
+    if(players[1]!=NULL)
+    {
             switch(event->key())
             {
             case Qt::Key_Down:
@@ -639,10 +650,11 @@ void subWindow::keyPressEvent(QKeyEvent *event)
             case Qt::Key_Right:
                 players[1]->dir=right;break;
             case Qt::Key_Space:
-                players[1]->shoot();break;
+                players[1]->shoot(1);break;
             }
             update();
-        }
+    }
+
 }
 
 void subWindow::on_pushButton_clicked()
@@ -655,8 +667,6 @@ void subWindow::on_pushButton_clicked()
     ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->returnclick->show();
-    ui->pushButton_3->show();
-    ui->pushButton_4->show();
 }
 
 void subWindow::on_pushButton_2_clicked()
@@ -669,40 +679,4 @@ void subWindow::on_pushButton_2_clicked()
     ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->returnclick->show();
-    ui->pushButton_3->show();
-    ui->pushButton_4->show();
-
 }
-
-//新增内容：暂停键
-void subWindow::on_pushButton_3_clicked()
-{
-    timer1->stop();
-    timer2->stop();
-    timer3->stop();
-    timer4->stop();
-}
-
-void subWindow::on_pushButton_4_clicked()
-{
-    timer1->start();
-    timer2->start();
-    timer3->start();
-    timer4->start();
-}
-
-void subWindow::createmymap()
-{
-
-}
-
-
-
-
-
-
-
-
-
-
-
