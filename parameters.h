@@ -15,8 +15,10 @@
 #define FOREST 3
 #define SEA 4
 #define STAR 5
+#define GOLD 6//����
+#define CLICK 7
 #define BULLET1 9
-//#define BULLET2 10
+#define BULLET2 10
 
 #define TOOL_BOMB 61
 #define TOOL_TANK 60
@@ -50,4 +52,5 @@
 #define TANK_SLOW 300
 #define BULLET_FAST 50
 #define BULLET_SLOW 80
+#define TANK_PLAYER 50
 #endif // PARAMETERS_H

@@ -409,6 +409,7 @@ QSet<QString> Database::getUserBoughtItems(const QString &username)
 
 QString Database::getUserEquippedItem(const QString &username)
 {
+
     QString equippedItem;
     QSqlQuery query(db);
     query.prepare("SELECT item_name FROM user_equipped_items WHERE username = ?");

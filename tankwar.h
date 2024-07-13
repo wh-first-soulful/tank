@@ -5,7 +5,6 @@
 #define up 1
 #define down 2
 
-
 class Bullet
 {
     int pos_x;//子弹当前横坐标
@@ -22,6 +21,7 @@ public:
     bool move();//控制子弹的移动
     void delete_bullet();//子弹在地图上消失
     friend class Tank;
+    friend class Enemy;
     friend class subWindow;
 };
 
@@ -47,17 +47,25 @@ public:
         delete bullets;
     }
     void basic_move();//控制坦克的移动
-    void shoot();//射出子弹
-    void delete_tank();//使坦克在地图上消失
+    void shoot(int Type);//射出子弹
+    void delete_tank();//使坦克在地图上消失s
 
     friend class subWindow;
 };
 
 class Map
 {
-    static int map[30][40];//存储地图数据
+    static int *map;//存储地图数据
+    static int map_sum;
+    static int gold_num;
+    static int player_gold_num;
+    static int golds_exists[10];//金币存在
+    static int golds[10][2];//金币坐标
 public:
     Map();//地图的初始化
+    Map(int *array);
+    void mapnew1();
+    void mapnew2();
     friend class subWindow;
     friend class Tank;
     friend class Player;
@@ -66,6 +74,18 @@ public:
 
 };
 
+class Mymap
+{
+public:
+    static int *mymap;//存储我的地图数据
+    Mymap();//自制地图的初始化
+    Mymap(int *array);
+    friend class subWindow;
+    friend class Tank;
+    friend class Player;
+    friend class Enemy;
+    friend class Bullet;
+};
 
 class Enemy :public Tank
 {
@@ -103,6 +123,9 @@ public:
         }
     }
     void move();//根据一定策略控制敌方坦克的移动
+    void gold_exists();//爆金币函数
+    void enemy_shoot();
+    //Bullet* bullets;
     friend class Bullet;
     friend class Control;
 };
@@ -116,11 +139,15 @@ public:
         pre_dir = dir;
         life = 10;
         atk = 1;
-        move_sleep_time = 300;
+        move_sleep_time = 50;
         bullet_sleep_time = 80;
     }
     void move();//根据玩家的键盘输入控制玩家坦克的移动
     friend class Bullet;
+    int down_flag;
+    int up_flag;
+    int left_flag;
+    int right_flag;
 };
 
 #endif // TANKWAR_H

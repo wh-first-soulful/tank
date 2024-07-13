@@ -22,6 +22,8 @@ public:
     explicit Login(QWidget *parent = 0);
     ~Login();
 
+protected:
+    void resizeEvent(QResizeEvent*event)override;
 private slots:
     void on_btn_signin_clicked();
 

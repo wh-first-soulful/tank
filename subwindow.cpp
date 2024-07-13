@@ -1,11 +1,21 @@
-#include "subwindow.h"
+﻿#include "subwindow.h"
 #include "ui_subwindow.h"
 #include "mainwindow.h"
-#include "Windows.h"
 #include "QKeyEvent"
 #include "parameters.h"
-subWindow::subWindow(QWidget *parent) :
-    QMainWindow(parent),
+#include "tankwar.h"
+#include "mymapmainwindow.h"
+
+extern int gold_num;
+extern int player_gold_num;
+extern int golds_exists[10];//金币存在
+extern int golds[10][2];//金币坐标
+bool subWindow::open=false;
+bool subWindow::save=false;
+
+
+subWindow::subWindow(User&user,QWidget *parent) :
+    QMainWindow(parent),user(user),
     ui(new Ui::subWindow)
 {
     ui->setupUi(this);
@@ -33,7 +43,8 @@ subWindow::subWindow(QWidget *parent) :
     ui->returnclick->setStyleSheet("QPushButton{border-image:url(:/pic/return.png);}" //正常
                                    "QPushButton:hover{border-image:url(:/pic/returnline.png);}" //鼠标悬浮
                                   );
-
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
     //load pics
     brick.load(brick_pic);
     sea.load(sea_pic);
@@ -41,6 +52,7 @@ subWindow::subWindow(QWidget *parent) :
     steel.load(steel_pic);
     black.load(black_pic);
     star.load(star_pic);
+    gold.load(gold_pic);
     tank1_up.load(":/pic/tank1up.png");
     tank1_dn.load(":/pic/tank1dn.png");
     tank1_left.load(":/pic/tank1left.png");
@@ -69,7 +81,7 @@ subWindow::subWindow(QWidget *parent) :
     tank_pic.load(":/pic/test.png");
     bomb_pic.load(":/pic/bomb.jpg");
     bullet.load(":/pic/bullet.png");
-    bullet2.load(":/pic/bullet2.jpg");
+    bullet2.load(":/pic/bullet1.jpg");
     gameover_pic.load(":/pic/win.png");
     gameover_pic.load(":/pic/gameover.png");
 
@@ -101,6 +113,18 @@ subWindow::subWindow(QWidget *parent) :
     init();
 }
 
+void subWindow::setarraydata(int *array)
+{
+    mylocalarray = new int [LENGTH * WIDTH];
+    for(int i = 0;i < WIDTH;i++)
+    {
+        for(int j = 0;j < LENGTH;j++)
+        {
+            mylocalarray[i * LENGTH + j] = array[i * LENGTH + j];
+        }
+    }
+}
+
 subWindow::~subWindow()
 {
     delete ui;
@@ -108,11 +132,6 @@ subWindow::~subWindow()
 
 void subWindow::init()
 {
-    for (int i = 0; i < 4; i++)
-    {
-        kill[i] = 0;
-        kill_2[i] = 0;
-    }
     for (int i = 0; i < 5; i++)
         tools_exist[i] = 0;
     //clock
@@ -128,17 +147,49 @@ void subWindow::init()
     enemies_num = 10;
     players_num = 1;
     new_num = 0;
-    score = 0;
-    score_2 = 0;
+
     gradesflag=0;
-    Enemy *e1 = new Enemy(1, 4, 2, 10);
-    Enemy *e2 = new Enemy(1, 18, 2, 11);
-    Enemy *e3 = new Enemy(1, 32, 2, 12);
-    Player *p1 = new Player(0,15, WIDTH-2, 20);
-    Player *p2 = new Player(-1,27, WIDTH-2, 21);
-    enemies[0] = e1;
-    enemies[1] = e2;
-    enemies[2] = e3;
+    //第二张地图需要修改坦克位置
+    //根据map_sum来对enemy位置初始化
+    if(Map::map_sum==2 || subWindow::open == true)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            kill[i] = 0;
+            kill_2[i] = 0;
+            kill_s[i] = 0;
+            kill_s2[i] = 0;
+        }
+        score = 0;
+        score_2 = 0;
+        Enemy *e1 = new Enemy(1, 4, 2, 10);
+        Enemy *e2 = new Enemy(1, 18, 2, 11);
+        Enemy *e3 = new Enemy(1, 32, 2, 12);
+        enemies[0] = e1;
+        enemies[1] = e2;
+        enemies[2] = e3;
+    }
+    else if(Map::map_sum==1)
+    {
+        Enemy *e1 = new Enemy(1, 2, 2, 10);
+        Enemy *e2 = new Enemy(1, 19, 2, 11);
+        Enemy *e3 = new Enemy(1, 37, 2, 12);
+        enemies[0] = e1;
+        enemies[1] = e2;
+        enemies[2] = e3;
+    }
+
+    else if(Map::map_sum==0)
+    {
+        Enemy *e1 = new Enemy(1, 2, 2, 10);
+        Enemy *e2 = new Enemy(1, 19, 2, 11);
+        Enemy *e3 = new Enemy(1, 37, 2, 12);
+        enemies[0] = e1;
+        enemies[1] = e2;
+        enemies[2] = e3;
+    }
+    Player *p1 = new Player(0,15, WIDTH-3, 20);
+    Player *p2 = new Player(-1,27, WIDTH-3, 21);
     players[0] = p1;
     if(mode==2)
         players[1]=p2;
@@ -154,6 +205,9 @@ void subWindow::on_returnclick_clicked()
     startflag=0;
     ui->pushButton->show();
     ui->pushButton_2->show();
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
+    ui->pushButton_5->show();
     init();
 }
 
@@ -251,36 +305,110 @@ void subWindow::bullet_move(int speed)
         else
         {
             int pos = 0;
-            switch (i)
+            if(Map::map_sum==2)
             {
-            case 0:
-                pos = 4; break;
-            case 1:
-                pos = 18; break;
-            case 2:
-                pos = 32; break;
+                switch (i)
+                {
+                case 0:
+                    pos = 4; break;
+                case 1:
+                    pos = 18; break;
+                case 2:
+                    pos = 32; break;
+                }
+                if (new_num == 6)
+                {
+                    Enemy *e = new Enemy(4, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 4 && new_num <= 5)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 2 && new_num <= 3)
+                {
+                    Enemy *e = new Enemy(3, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 0 && new_num <= 1)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                new_num++;
             }
-            if (new_num == 6)
+            else if(Map::map_sum==1)
             {
-                Enemy *e = new Enemy(4, pos, 2, 10 + i);
-                enemies[i] = e;
+                switch (i)
+                {
+                case 0:
+                    pos = 2; break;
+                case 1:
+                    pos = 19; break;
+                case 2:
+                    pos = 37; break;
+                }
+                if (new_num == 6)
+                {
+                    Enemy *e = new Enemy(4, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 4 && new_num <= 5)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 2 && new_num <= 3)
+                {
+                    Enemy *e = new Enemy(3, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 0 && new_num <= 1)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                new_num++;
             }
-            else if (new_num >= 4 && new_num <= 5)
+            else if(Map::map_sum==0)
             {
-                Enemy *e = new Enemy(2, pos, 2, 10 + i);
-                enemies[i] = e;
+                switch (i)
+                {
+                case 0:
+                    pos = 2; break;
+                case 1:
+                    pos = 19; break;
+                case 2:
+                    pos = 37; break;
+                }
+                if (new_num == 6)
+                {
+                    Enemy *e = new Enemy(4, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 4 && new_num <= 5)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 2 && new_num <= 3)
+                {
+                    Enemy *e = new Enemy(3, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                else if (new_num >= 0 && new_num <= 1)
+                {
+                    Enemy *e = new Enemy(2, pos, 2, 10 + i);
+                    enemies[i] = e;
+                }
+                new_num++;
             }
-            else if (new_num >= 2 && new_num <= 3)
+            else
             {
-                Enemy *e = new Enemy(3, pos, 2, 10 + i);
-                enemies[i] = e;
+                endflag=1;
+                winflag=1;
             }
-            else if (new_num >= 0 && new_num <= 1)
-            {
-                Enemy *e = new Enemy(2, pos, 2, 10 + i);
-                enemies[i] = e;
-            }
-            new_num++;
         }
     }
     for (int i = 0; i < 2; i++)
@@ -302,19 +430,30 @@ void subWindow::bullet_move(int speed)
                         players[i]->life++;
                         break;
                     case 2://bomb
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; j++)//修改了敌人小于3时闪退的bug
                         {
-                            if (i == 0)
-                                kill[enemies[j]->type - 1]++;
-                            else
-                                kill_2[enemies[j]->type - 1]++;
-                            if (enemies[j]->bullets != NULL)
-                                enemies[j]->bullets->delete_bullet();
-                            enemies[j]->delete_tank();
-                            delete enemies[j];
-                            enemies[j] = NULL;
-                            enemies_num--;
+                            if(enemies[j]!=NULL)
+                            {
+                                if (i == 0)
+                                {
+                                    kill[enemies[j]->type - 1]++;
+                                    kill_s[enemies[j]->type - 1]++;
+                                }
+                                else
+                                {
+                                    kill_2[enemies[j]->type - 1]++;
+                                    kill_s2[enemies[j]->type - 1]++;
+                                }
+                                if (enemies[j]->bullets != NULL)
+                                    enemies[j]->bullets->delete_bullet();
+                                enemies[j]->delete_tank();
+                                delete enemies[j];
+                                enemies[j] = NULL;
+
+                                enemies_num--;
+                            }
                         }
+
                         break;
                     }
                     tools_exist[k] = 2;
@@ -331,15 +470,22 @@ void subWindow::bullet_move(int speed)
                     {
                         if (enemies[pos - 10]->life <= 1)
                         {
-                            if(i==0)
+                            if (i == 0)
+                            {
                                 kill[enemies[pos - 10]->type - 1]++;
+                                kill_s[enemies[pos - 10]->type - 1]++;
+                            }
                             else
+                            {
                                 kill_2[enemies[pos - 10]->type - 1]++;
+                                kill_s2[enemies[pos - 10]->type - 1]++;
+                            }
                             if(enemies[pos - 10]->bullets!=NULL)
                                 enemies[pos - 10]->bullets->delete_bullet();
                             delete enemies[pos - 10]->bullets;
                             enemies[pos - 10]->bullets=NULL;
                             enemies[pos - 10]->delete_tank();
+                            enemies[pos-10]->gold_exists();//
                             delete enemies[pos - 10];
                             enemies[pos - 10] = NULL;
                             enemies_num--;
@@ -363,6 +509,31 @@ void subWindow::bullet_move(int speed)
             }
         }
     }
+    //吸收金币
+    for (int i = 0; i < 2; i++) {
+        if (players[i] != NULL) {
+            for (int k = 0; k < Map::gold_num; k++) {
+                if (Map::golds_exists[k] == 1 &&
+                    (players[i]->pos_x - 2 <= Map::golds[k][0] && players[i]->pos_x + 2 >= Map::golds[k][0]) &&
+                    (players[i]->pos_y - 2 <= Map::golds[k][1] && players[i]->pos_y + 2 >= Map::golds[k][1])) {
+                    {
+                        Map::player_gold_num++; // 增加玩家金币数量
+                        Map::golds_exists[k] = 0; // 将金币状态设置为不存在
+                        Map::map[Map::golds[k][1] * LENGTH + Map::golds[k][0]] = EMPTY; // 重置地图上的金币位置
+                        update(); // 更新界面
+                    }
+                }
+            }
+        }
+    }
+   /* for(int i=0;i<=10;i++)
+    {
+        if(Map::golds_exists[i]==1)
+            Map::map[Map::golds[i][1] * LENGTH + Map::golds[i][0]] = GOLD;
+        else
+            if(Map::map[Map::golds[i][1] * LENGTH + Map::golds[i][0]]>=60)
+            Map::map[Map::golds[i][1] * LENGTH + Map::golds[i][0]]=0;
+    }*/
     switch (enemies_num)
     {
     case 9:
@@ -410,9 +581,10 @@ void subWindow::bullet_move(int speed)
                 score_2 += 100 * (k + 1)*kill_2[k];
         }
         endflag=1;
+        Map::map_sum=2;
 
     }
-    if(enemies_num==0)
+   /* if(enemies_num==0)
     {
         if(!endflag)
         {
@@ -423,6 +595,29 @@ void subWindow::bullet_move(int speed)
         }
         endflag=1;
         winflag=1;
+    }*/
+
+    if(enemies_num==0)
+    {
+        if(Map::map_sum==2)
+        {
+            //将新的地图数据导入
+            m.mapnew1();
+            Map::map_sum--;
+            //初始化
+            init();
+            // Map::map_sum--;
+        }
+        else if(Map::map_sum==1)
+        {
+            m.mapnew2();
+            Map::map_sum--;
+            init();
+        }
+        else{
+            endflag=1;
+            winflag=1;
+        }
     }
     update();
 }
@@ -501,13 +696,13 @@ void subWindow::paintEvent(QPaintEvent *event)
                 case TANK4_RIGHT:
                     painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank4_right);break;
                 case TANK5_UP:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_up);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_up);break;
                 case TANK5_DN:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_dn);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_dn);break;
                 case TANK5_LEFT:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_left);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_left);break;
                 case TANK5_RIGHT:
-                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 60, 60,tank5_right);break;
+                    painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank5_right);break;
                 case TANK6_UP:
                     painter.drawPixmap(SIZE*(j-1), SIZE*(i-1), 90, 90,tank6_up);break;
                 case TANK6_DN:
@@ -524,6 +719,8 @@ void subWindow::paintEvent(QPaintEvent *event)
                     painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,tank_pic);break;
                 case TOOL_BOMB:
                     painter.drawPixmap(SIZE*j, SIZE*i, 30, 30,bomb_pic);break;
+                case GOLD:
+                    painter.drawPixmap(SIZE * j, SIZE * i, 30, 30, gold_pic); break;
                 }
 
             }
@@ -539,6 +736,8 @@ void subWindow::paintEvent(QPaintEvent *event)
         painter.drawText(1330,300,tr("HP:"));
         painter.setPen(Qt::red);
         painter.drawText(1380,300,QString::number(players[0]->life));
+        painter.drawText(1300,500,tr("Gold"));
+        painter.drawText(1380,500,QString::number(Map::player_gold_num));
         painter.setPen(Qt::white);
         painter.setPen(Qt::blue);
         painter.drawText(1280,350,tr("W"));
@@ -572,9 +771,9 @@ void subWindow::paintEvent(QPaintEvent *event)
         for (int i = 0; i < 4; i++)
         {
             painter.drawText(250,200+100*i,tr("*"));
-            painter.drawText(300,200+100*i,QString::number(kill[i]));
+            painter.drawText(300,200+100*i,QString::number(kill_s[i]));
             painter.drawText(350,200+100*i,tr("="));
-            painter.drawText(400,200+100*i,QString::number(100 * (i + 1)*kill[i]));
+            painter.drawText(400,200+100*i,QString::number(100 * (i + 1)*kill_s[i]));
         }
         painter.drawText(100,600,tr("Final Score:"));
         painter.drawText(350,600,QString::number(score));
@@ -589,9 +788,9 @@ void subWindow::paintEvent(QPaintEvent *event)
             for (int i = 0; i < 4; i++)
             {
                 painter.drawText(950,200+100*i,tr("*"));
-                painter.drawText(1000,200+100*i,QString::number(kill_2[i]));
+                painter.drawText(1000,200+100*i,QString::number(kill_s2[i]));
                 painter.drawText(1050,200+100*i,tr("="));
-                painter.drawText(1100,200+100*i,QString::number(100 * (i + 1)*kill_2[i]));
+                painter.drawText(1100,200+100*i,QString::number(100 * (i + 1)*kill_s2[i]));
             }
             painter.drawText(800,600,tr("Final Score:"));
             painter.drawText(1050,600,QString::number(score_2));
@@ -617,6 +816,17 @@ void subWindow::gameover()
 {
     endflag=1;
 }
+
+void subWindow::reload()
+{
+    QString cur=Database::getInstance()->getUserEquippedItem(user.name);
+    qDebug()<<"Reload "<<Database::getInstance()->getUserEquippedItem(user.name);
+    if(cur=="Item 1"){
+        this->tank5_up.load(":/pic/tank7up.png");
+    }else{
+        this->tank5_up.load(":/pic/tank5up.png");
+    }
+}
 void subWindow::keyPressEvent(QKeyEvent *event)
 {
     if(players[0]!=NULL)
@@ -634,12 +844,13 @@ void subWindow::keyPressEvent(QKeyEvent *event)
             case Qt::Key_J:
                 players[0]->shoot(1);break;
             }
-            
+
             update();
     }
     if(players[1]!=NULL)
     {
-            switch(event->key())
+        switch(event->key())
+
             {
             case Qt::Key_Down:
                 players[1]->dir=down;break;
@@ -661,22 +872,81 @@ void subWindow::on_pushButton_clicked()
 {
 
     mode=1;
-    Map m;
+    if(open == false)
+    {
+        Map m;
+    }
+    else
+    {
+        Map m(mylocalarray);
+    }
     init();
     startflag=1;
     ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->returnclick->show();
+    ui->pushButton_3->show();
+    ui->pushButton_4->show();
+    ui->pushButton_5->hide();
 }
 
 void subWindow::on_pushButton_2_clicked()
 {
 
-    Map m;
+    if(open == false)
+    {
+        Map m;
+    }
+    else
+    {
+        Map m(mylocalarray);
+    }
     mode=2;
     init();
     startflag=1;
     ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->returnclick->show();
+    ui->pushButton_3->show();
+    ui->pushButton_4->show();
+    ui->pushButton_5->hide();
+}
+
+//新增内容：暂停键
+void subWindow::on_pushButton_3_clicked()
+{
+
+    timer1->stop();
+    timer2->stop();
+    timer3->stop();
+    timer4->stop();
+    timer5->stop();
+}
+
+void subWindow::on_pushButton_4_clicked()
+{
+    timer1->start();
+    timer2->start();
+    timer3->start();
+    timer4->start();
+    timer5->start();
+}
+
+void subWindow::on_pushButton_5_clicked()
+{
+    if(subWindow::save == false)
+    {
+        MymapMainWindow *second = new MymapMainWindow(user);
+        this -> close();
+        //delete this;
+        second -> show();
+    }
+    else
+    {
+        MymapMainWindow *second = new MymapMainWindow(user);
+        second -> setarraydatas(mylocalarray);
+        this -> close();
+        //delete this;
+        second -> show();
+    }
 }

@@ -18,7 +18,7 @@ class ShopWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ShopWindow(User&user,QWidget *parent = nullptr);
+    explicit ShopWindow(User&user,QMainWindow *parent = nullptr);
     ~ShopWindow();
 
 
@@ -29,37 +29,40 @@ public:
 
 
 private slots:
-    void buyItem1();
-    void buyItem2();
-    void buyItem3();
-    void buyItem4();
-    void equipItem1();
-    void equipItem2();
-    void equipItem3();
-    void equipItem4();
-    void close();
+
+
+    void on_buy1_clicked();
+
+    void on_equip1_clicked();
+
+    void on_buy2_clicked();
+
+    void on_buy3_clicked();
+
+    void on_buy4_clicked();
+
+    void on_equip2_clicked();
+
+    void on_equip3_clicked();
+
+    void on_equip4_clicked();
+
+    void on_return_2_clicked();
+
+protected:
+     void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::ShopWindow *ui;
     User user;
-    QLabel*label;
-    QLabel* equippedItemLabel;
-    QPushButton *item1Button;
-    QPushButton *item2Button;
-    QPushButton *item3Button;
-    QPushButton *item4Button;
-    QPushButton *equipItem1Button;
-    QPushButton *equipItem2Button;
-    QPushButton *equipItem3Button;
-    QPushButton *equipItem4Button;
-    QPushButton*backButton;
+
 
     void updateCoinsDisplay();
     void updateEquippedItemDisplay();
     bool confirmPurchase(const QString &itemName, int cost);
     bool confirmEquip(const QString &itemName);
     void updateDatabase();
-    void closeEvent(QCloseEvent *event) override;
+
 };
 
 #endif // SHOPWINDOW_H
