@@ -1,4 +1,4 @@
-﻿#include "subwindow.h"
+#include "subwindow.h"
 #include "ui_subwindow.h"
 #include "mainwindow.h"
 #include "QKeyEvent"
@@ -14,8 +14,8 @@ bool subWindow::open=false;
 bool subWindow::save=false;
 
 
-subWindow::subWindow(User&user,QWidget *parent) :
-    QMainWindow(parent),user(user),
+subWindow::subWindow(QWidget *parent) :
+    QMainWindow(parent),
     ui(new Ui::subWindow)
 {
     ui->setupUi(this);
@@ -81,7 +81,7 @@ subWindow::subWindow(User&user,QWidget *parent) :
     tank_pic.load(":/pic/test.png");
     bomb_pic.load(":/pic/bomb.jpg");
     bullet.load(":/pic/bullet.png");
-    bullet2.load(":/pic/bullet1.jpg");
+    bullet2.load(":/pic/bullet2.jpg");
     gameover_pic.load(":/pic/win.png");
     gameover_pic.load(":/pic/gameover.png");
 
@@ -600,7 +600,7 @@ void subWindow::bullet_move(int speed)
     if(enemies_num==0)
     {
         if(Map::map_sum==2)
-        {
+        {         
             //将新的地图数据导入
             m.mapnew1();
             Map::map_sum--;
@@ -816,17 +816,6 @@ void subWindow::gameover()
 {
     endflag=1;
 }
-
-void subWindow::reload()
-{
-    QString cur=Database::getInstance()->getUserEquippedItem(user.name);
-    qDebug()<<"Reload "<<Database::getInstance()->getUserEquippedItem(user.name);
-    if(cur=="Item 1"){
-        this->tank5_up.load(":/pic/tank7up.png");
-    }else{
-        this->tank5_up.load(":/pic/tank5up.png");
-    }
-}
 void subWindow::keyPressEvent(QKeyEvent *event)
 {
     if(players[0]!=NULL)
@@ -844,7 +833,7 @@ void subWindow::keyPressEvent(QKeyEvent *event)
             case Qt::Key_J:
                 players[0]->shoot(1);break;
             }
-
+            
             update();
     }
     if(players[1]!=NULL)
@@ -936,17 +925,17 @@ void subWindow::on_pushButton_5_clicked()
 {
     if(subWindow::save == false)
     {
-        MymapMainWindow *second = new MymapMainWindow(user);
+        MymapMainWindow *second = new MymapMainWindow();
         this -> close();
-        //delete this;
+        delete this;
         second -> show();
     }
     else
     {
-        MymapMainWindow *second = new MymapMainWindow(user);
+        MymapMainWindow *second = new MymapMainWindow();
         second -> setarraydatas(mylocalarray);
         this -> close();
-        //delete this;
+        delete this;
         second -> show();
     }
 }
