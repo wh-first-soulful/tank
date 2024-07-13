@@ -1,6 +1,5 @@
 QT       += core gui
 QT      +=sql
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -20,30 +19,39 @@ SOURCES += \
     database.cpp \
     login.cpp \
     main.cpp \
-    mainwindow.cpp \
     mymapmainwindow.cpp \
-    signup.cpp \
+    shopwindow.cpp \
     subwindow.cpp \
     tankwar.cpp \
+    mainwindow.cpp \
+    signup.cpp \
+    CommentWidget.cpp \
+    RankWidget.cpp \
     user.cpp
 
 HEADERS += \
+    CommentWidget.h \
     database.h \
     login.h \
-    mainwindow.h \
     mymapmainwindow.h \
     parameters.h \
-    signup.h \
+    shopwindow.h \
     subwindow.h \
     tankwar.h \
+    mainwindow.h \
+    signup.h \
+    RankWidget.h \
     user.h
 
 FORMS += \
-    login.ui \
     mainwindow.ui \
     mymapmainwindow.ui \
+    shopwindow.ui \
+    subwindow.ui \
+    Login.ui \
     signup.ui \
-    subwindow.ui
+    CommentWidget.ui \
+    RankWidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
