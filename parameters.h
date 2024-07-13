@@ -15,7 +15,7 @@
 #define FOREST 3
 #define SEA 4
 #define STAR 5
-#define GOLD 6//ï¿½ï¿½ï¿½ï¿½
+#define GOLD 6//½ð±Ò
 #define CLICK 7
 #define BULLET1 9
 #define BULLET2 10

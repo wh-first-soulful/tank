@@ -5,8 +5,8 @@
 #include "database.h"
 
 
-namespace Ui {
-class Signup;
+    namespace Ui {
+    class Signup;
 }
 
 class Signup : public QWidget

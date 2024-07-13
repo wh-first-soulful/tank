@@ -1,4 +1,4 @@
-﻿#ifndef DATABASE_H
+#ifndef DATABASE_H
 #define DATABASE_H
 
 #include <QtSql/QSqlDatabase>
@@ -63,16 +63,16 @@ public:
 
 
     // 添加用户购买的物品信息
-        bool addUserBoughtItems(const QString &username, const QSet<QString> &boughtItems);
+    bool addUserBoughtItems(const QString &username, const QSet<QString> &boughtItems);
 
-        // 添加用户装备的物品信息
-        bool addUserEquippedItem(const QString &username, const QString &equippedItem);
+    // 添加用户装备的物品信息
+    bool addUserEquippedItem(const QString &username, const QString &equippedItem);
 
-        // 获取用户购买的物品信息
-        QSet<QString> getUserBoughtItems(const QString &username);
+    // 获取用户购买的物品信息
+    QSet<QString> getUserBoughtItems(const QString &username);
 
-        // 获取用户装备的物品信息
-        QString getUserEquippedItem(const QString &username);
+    // 获取用户装备的物品信息
+    QString getUserEquippedItem(const QString &username);
 
     QString getUserName();
 

@@ -4,9 +4,9 @@
 #include "tankwar.h"
 #include "subwindow.h"
 
-MymapMainWindow::MymapMainWindow(User&user,QWidget *parent)
+MymapMainWindow::MymapMainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MymapMainWindow),user(user)
+    , ui(new Ui::MymapMainWindow)
 {
     ui->setupUi(this);
     this->setWindowTitle("地图编辑器");
@@ -225,7 +225,7 @@ void MymapMainWindow::on_pushButton_5_clicked()
 
 void MymapMainWindow::on_pushButton_6_clicked()
 {
-    subWindow *first = new subWindow(user);
+    subWindow *first = new subWindow();
     subWindow::open = true;
     first -> setarraydata(Mymap::mymap);
     this -> close();
@@ -236,7 +236,7 @@ void MymapMainWindow::on_pushButton_6_clicked()
 
 void MymapMainWindow::on_pushButton_7_clicked()
 {
-    subWindow *first = new subWindow(user);
+    subWindow *first = new subWindow();
     this -> close();
     delete this;
     first -> show();
@@ -245,8 +245,7 @@ void MymapMainWindow::on_pushButton_7_clicked()
 
 void MymapMainWindow::on_pushButton_8_clicked()
 {
-
-    subWindow *first = new subWindow(user);
+    subWindow *first = new subWindow();
     subWindow::save = true;
     first -> setarraydata(Mymap::mymap);
     this -> close();

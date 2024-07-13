@@ -3,7 +3,7 @@
 #include <QtSql/QSqlError>
 #include <QDebug>
 
-QString Database::currrentName="null";
+    QString Database::currrentName="null";
 Database *Database::dataBase = nullptr;
 
 Database::Database() : file("log.txt")
@@ -39,14 +39,14 @@ Database::Database() : file("log.txt")
         }
 
         success = query.exec("CREATE TABLE IF NOT EXISTS scores ("
-                                     "username TEXT NOT NULL, "
-                                     "time TEXT NOT NULL, "
-                                     "score INTEGER DEFAULT 0,"
-                                     "two_player_score INTEGER DEFAULT 0)"
-                                     );
+                             "username TEXT NOT NULL, "
+                             "time TEXT NOT NULL, "
+                             "score INTEGER DEFAULT 0,"
+                             "two_player_score INTEGER DEFAULT 0)"
+                             );
 
-                if (!success) {
-                    qDebug() << "Failed to create scores table:" << query.lastError();}
+        if (!success) {
+            qDebug() << "Failed to create scores table:" << query.lastError();}
 
         success = query.exec("CREATE TABLE IF NOT EXISTS user_bought_items ("
                              "username TEXT NOT NULL, "
@@ -284,7 +284,7 @@ bool Database::insertScore(int score, int tow_score, QString username)
 
     QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QString sqlStr = QString("INSERT INTO scores (username, time, score, two_player_score) VALUES (\"%1\", \"%2\", %3, %4)")
-            .arg(username).arg(currentTime).arg(score).arg(tow_score);
+                         .arg(username).arg(currentTime).arg(score).arg(tow_score);
     //query.prepare(QString("INSERT INTO scores (username, time, score, two_player_score) VALUES (%1, %2, %3, %4)")
     //             .arg(username).arg(currentTime).arg(score).arg(tow_score));
 
@@ -333,19 +333,19 @@ bool Database::addUserBoughtItems(const QString &username, const QSet<QString> &
     for (const QString &itemName : boughtItems) {
         QSqlQuery query(db);
         query.prepare("SELECT item_name FROM user_bought_items WHERE username = ? AND item_name = ?");
-                query.addBindValue(username);
-                query.addBindValue(itemName);
-                if (query.exec() && query.next()) {
-                    // 如果已购买的物品已存在，则跳过
-                    continue;
-                }
-                query.prepare("INSERT INTO user_bought_items (username, item_name) VALUES (?, ?)");
-                query.addBindValue(username);
-                query.addBindValue(itemName);
-                if (!query.exec()) {
-                    qDebug() << "Failed to add user bought items:" << query.lastError();
-                    return false;
-                }
+        query.addBindValue(username);
+        query.addBindValue(itemName);
+        if (query.exec() && query.next()) {
+            // 如果已购买的物品已存在，则跳过
+            continue;
+        }
+        query.prepare("INSERT INTO user_bought_items (username, item_name) VALUES (?, ?)");
+        query.addBindValue(username);
+        query.addBindValue(itemName);
+        if (!query.exec()) {
+            qDebug() << "Failed to add user bought items:" << query.lastError();
+            return false;
+        }
     }
     return true;
 }
@@ -402,14 +402,13 @@ QSet<QString> Database::getUserBoughtItems(const QString &username)
     }
 
     if (boughtItems.isEmpty()) {
-            qDebug() << "No bought items found for username: " << username;
-        }
+        qDebug() << "No bought items found for username: " << username;
+    }
     return boughtItems;
 }
 
 QString Database::getUserEquippedItem(const QString &username)
 {
-
     QString equippedItem;
     QSqlQuery query(db);
     query.prepare("SELECT item_name FROM user_equipped_items WHERE username = ?");
@@ -422,4 +421,3 @@ QString Database::getUserEquippedItem(const QString &username)
     }
     return equippedItem;
 }
-

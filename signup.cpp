@@ -2,14 +2,14 @@
 #include "ui_signup.h"
 #include "login.h"
 
-Signup::Signup(QWidget *parent) :
+    Signup::Signup(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Signup)
 {
     ui->setupUi(this);
 
     setWindowTitle("注册");
-    QPixmap *pix = new QPixmap(":/pic/");
+    QPixmap *pix = new QPixmap(":/image/login/");
     QSize sz = ui->label_image->size();
     ui->label_image->setPixmap(pix->scaled(sz));
 }
