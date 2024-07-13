@@ -36,7 +36,7 @@ bool User::hasBoughtItem(const QString &item) const {
 
 void User::equipItem(const QString &item) {
     if(item==this->equippedItem){
-     QMessageBox::warning(nullptr, "装备错误", "已装备当前植物");
+        QMessageBox::warning(nullptr, "装备错误", "已装备当前植物");
     }else if(item!=equippedItem){
         QMessageBox::information(nullptr, "", "装备成功!");
         equippedItem = item;
