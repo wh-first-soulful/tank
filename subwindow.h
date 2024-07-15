@@ -29,6 +29,7 @@ public:
     static bool save;
     Map m;
     User user;
+    QPalette palette;
 
 private slots:
     void on_returnclick_clicked();

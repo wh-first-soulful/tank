@@ -8,7 +8,7 @@
 #include "RankWidget.h"
 #include"user.h"
 #include"shopwindow.h"
-#include"mymapmainwindow.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(User&user,QWidget *parent = nullptr);
     ~MainWindow();
-
+    QPalette palette;
     static subWindow *m_subWindow;
     friend class MymapMainWindow;
   private slots:

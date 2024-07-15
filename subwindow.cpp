@@ -25,25 +25,30 @@ subWindow::subWindow(User&user,QWidget *parent) :
     //set size
     setMinimumSize(1500, 900); setMaximumSize(1500, 900);
     //set background
-    QPalette  palette (this->palette());
-    palette.setColor(QPalette::Window, Qt::black);
+    QPixmap pixmap = QPixmap(":/pic/cover1.png").scaled(this->size());
+    setMinimumSize(1500, 900); setMaximumSize(1500, 900);
+    palette.setBrush(QPalette::Window, QBrush(pixmap));
     this->setPalette( palette );
     /*set title*/
     this->setWindowTitle("Tank Battle");
     this->setWindowIcon(QIcon(":/pic/icon.jpg"));
     //set icons
-    ui->pushButton->setStyleSheet("QPushButton{border-image:url(:/pic/1player.png);}" //正常
-                                   "QPushButton:hover{border-image:url(:/pic/1playerline.png);}" //鼠标悬浮
+    ui->pushButton->setStyleSheet("QPushButton{border-image:url(:/pic/1player111.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/1player1111.png);}" //鼠标悬浮
                                   );
-    ui->pushButton->setFixedSize(QSize(400,100));//icon size
-    ui->pushButton_2->setStyleSheet("QPushButton{border-image:url(:/pic/2player.png);}" //正常
-                                   "QPushButton:hover{border-image:url(:/pic/2playerline.png);}" //鼠标悬浮
-                                  );
-    ui->pushButton_2->setFixedSize(QSize(400,100));//icon size
+    ui->pushButton->setFixedSize(QSize(450,160));//icon size
+    ui->pushButton_2->setStyleSheet("QPushButton{border-image:url(:/pic/2player222.png);}" //正常
+                                    "QPushButton:hover{border-image:url(:/pic/2player2222.png);}" //鼠标悬浮
+                                    );
+    ui->pushButton_2->setFixedSize(QSize(450,160));//icon size
+    ui->pushButton_5->setStyleSheet("QPushButton{border-image:url(:/pic/makemymap.png);}" //正常
+                                    "QPushButton:hover{border-image:url(:/pic/makemymap111.png);}" //鼠标悬浮
+                                    );
+    ui->pushButton_5->setFixedSize(QSize(450,160));//icon size
     ui->returnclick->setFixedSize(QSize(200,50));//icon size
     ui->returnclick->setStyleSheet("QPushButton{border-image:url(:/pic/return.png);}" //正常
                                    "QPushButton:hover{border-image:url(:/pic/returnline.png);}" //鼠标悬浮
-                                  );
+                                   );
     ui->pushButton_3->hide();
     ui->pushButton_4->hide();
     //load pics
@@ -211,6 +216,10 @@ void subWindow::on_returnclick_clicked()
     ui->pushButton_4->hide();
     ui->pushButton_5->show();
     init();
+    QPixmap pixmap = QPixmap(":/pic/cover1.png").scaled(this->size());
+    setMinimumSize(1500, 900); setMaximumSize(1500, 900);
+    palette.setBrush(QPalette::Window, QBrush(pixmap));
+    this->setPalette( palette );
 }
 
 void subWindow::tank_move_slow()
@@ -825,8 +834,10 @@ void subWindow::reload()
     qDebug()<<"Reload "<<Database::getInstance()->getUserEquippedItem(user.name);
     if(cur=="Item 1"){
         this->tank5_up.load(":/pic/tank7up.png");
-    }else{
-        this->tank5_up.load(":/pic/tank5up.png");
+    }
+    else
+    {
+        this->tank5_up.load(":/pic/tank7up.png");
     }
 }
 void subWindow::keyPressEvent(QKeyEvent *event)
@@ -890,6 +901,8 @@ void subWindow::on_pushButton_clicked()
     ui->pushButton_3->show();
     ui->pushButton_4->show();
     ui->pushButton_5->hide();
+    palette.setColor(QPalette::Window,Qt::black);
+    this -> setPalette(palette);
 }
 
 void subWindow::on_pushButton_2_clicked()
@@ -912,6 +925,8 @@ void subWindow::on_pushButton_2_clicked()
     ui->pushButton_3->show();
     ui->pushButton_4->show();
     ui->pushButton_5->hide();
+    palette.setColor(QPalette::Window,Qt::black);
+    this -> setPalette(palette);
 }
 
 //新增内容：暂停键

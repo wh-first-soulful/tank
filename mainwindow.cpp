@@ -19,9 +19,8 @@ MainWindow::MainWindow(User&user,QWidget *parent)
     setMinimumSize(1500, 900); setMaximumSize(1500, 900);
 
     //设置背景
-    QPixmap pixmap = QPixmap(":/pic/cover.png").scaled(this->size());
-    QPalette  palette (this->palette());
-    palette .setBrush(QPalette::Background, QBrush(pixmap));
+    QPixmap pixmap = QPixmap(":/pic/cover1.png").scaled(this->size());
+    palette.setBrush(QPalette::Window, QBrush(pixmap));
     this-> setPalette( palette );
 
     /*set title*/
@@ -29,13 +28,13 @@ MainWindow::MainWindow(User&user,QWidget *parent)
     this->setWindowIcon(QIcon(":/pic/cover.png"));
     //this->setWindowIcon(QIcon(":/pic/icon.jpg"));
     /*set icon*/
-    ui->pushButton->setStyleSheet("QPushButton{border-image:url(:/pic/start5.png);}" //正常
-                                  "QPushButton:hover{border-image:url(:/pic/start6.png);}" //鼠标悬浮
+    ui->pushButton->setStyleSheet("QPushButton{border-image:url(:/pic/start111.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/start222.png);}" //鼠标悬浮
                                   );
-    ui->pushButton->setFixedSize(QSize(200,100));//icon size
-    ui->pushButton_2->setFixedSize(QSize(200,100));//icon size
-    ui->pushButton_2->setStyleSheet("QPushButton{border-image:url(:/pic/EXIT.png);}" //正常
-                                    "QPushButton:hover{border-image:url(:/pic/exit2.png);}" //鼠标悬浮
+    ui->pushButton->setFixedSize(QSize(500,250));//icon size
+    ui->pushButton_2->setFixedSize(QSize(80,80));//icon size
+    ui->pushButton_2->setStyleSheet("QPushButton{border-image:url(:/pic/exit111.png);}" //正常
+                                    "QPushButton:hover{border-image:url(:/pic/exit222.png);}" //鼠标悬浮
                                     );
 
     ui->btnHistory->setStyleSheet("QPushButton{border-image:url(:/image/history.png);}"); //正常

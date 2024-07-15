@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>190</y>
+      <x>830</x>
+      <y>120</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>460</y>
+      <x>830</x>
+      <y>260</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -82,14 +82,14 @@
    <widget class="QPushButton" name="pushButton_5">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>710</y>
+      <x>820</x>
+      <y>430</y>
       <width>181</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>点此进入地图编辑器</string>
+     <string/>
     </property>
    </widget>
   </widget>
@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>1604</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>
