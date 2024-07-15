@@ -1,5 +1,5 @@
 ﻿#include "login.h"
-#include "ui_Login.h"
+#include "ui_login.h"
 #include "signup.h"
 
 #include "mainwindow.h"
@@ -36,7 +36,7 @@ void Login::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
         QPalette palette = this->palette();
-        palette.setBrush(QPalette::Background, QPixmap(":/image/login/").scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        palette.setBrush(QPalette::Window, QPixmap(":/image/login/").scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         this->setPalette(palette);
 }
 
