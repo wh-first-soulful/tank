@@ -223,43 +223,6 @@ void Tank::shoot(int Type)
     bullets = b;
 }
 
-void Player::player_shoot(int Type)
-{
-    if (bullets != NULL)
-        return;
-    Bullet *b = new Bullet();
-    b->dir = pre_dir;
-    assert(b->dir != 0);
-    b->pos_x = pos_x;
-    b->pos_y = pos_y;
-    switch (b->dir)
-    {
-    case up:
-        b->pos_y -= 2;
-        b->pos_x -= 1;
-        break;
-    case down:
-        b->pos_y += 2;
-        b->pos_x += 1;
-        break;
-    case left:
-        b->pos_x -= 2;
-        b->pos_y -=1;
-        break;
-    case right:
-        b->pos_x += 2;
-        b->pos_y -=1;
-        break;
-    }
-    b->sleep_time = bullet_sleep_time;
-    if (type == 3)
-        b->type = 2;
-    else
-        b->type = 1;
-    b->master = id;
-    bullets = b;
-}
-
 
 void Enemy::enemy_shoot()
 {

@@ -1,4 +1,4 @@
-#ifndef SUBWINDOW_H
+﻿#ifndef SUBWINDOW_H
 #define SUBWINDOW_H
 
 #include <QMainWindow>
@@ -6,7 +6,7 @@
 #include <QPainter>
 
 #include "tankwar.h"
-
+#include"user.h"
 #include <QTimer>
 namespace Ui {
 class subWindow;
@@ -17,16 +17,18 @@ class subWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit subWindow(QWidget *parent = nullptr);
+    explicit subWindow(User&user,QWidget *parent = nullptr);
     ~subWindow();
     void setarraydata(int *array);
     void paintEvent(QPaintEvent *event);
     QPainter painter;
     void init();//初始化
     void gameover();
+    void reload();
     static bool open;
     static bool save;
     Map m;
+    User user;
 
 private slots:
     void on_returnclick_clicked();
@@ -46,6 +48,8 @@ private slots:
     void on_pushButton_4_clicked();
     void on_pushButton_5_clicked();
 
+protected:
+    void closeEvent(QCloseEvent*event);
 
 
 signals:
@@ -119,7 +123,7 @@ private:
     int kill_2[4];//玩家2击杀敌方坦克情况
     int tools[5][2];//道具坐标
     int tools_exist[5];//道具存在情况
-    int *mylocalarray; //构造函数的数组
+    int *mylocalarray;//构造函数的数组
     bool startflag;
     bool endflag;
     bool gradesflag;

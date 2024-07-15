@@ -21,7 +21,6 @@ public:
     bool move();//控制子弹的移动
     void delete_bullet();//子弹在地图上消失
     friend class Tank;
-    friend class Player;
     friend class Enemy;
     friend class subWindow;
 };
@@ -144,13 +143,11 @@ public:
         bullet_sleep_time = 80;
     }
     void move();//根据玩家的键盘输入控制玩家坦克的移动
-    void player_shoot(int Type);//玩家类射击
     friend class Bullet;
     int down_flag;
     int up_flag;
     int left_flag;
     int right_flag;
-    int bullet_type;//子弹类型
 };
 
 #endif // TANKWAR_H

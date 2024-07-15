@@ -3,10 +3,11 @@
 #include "parameters.h"
 #include "tankwar.h"
 #include "subwindow.h"
+#
 
-MymapMainWindow::MymapMainWindow(QWidget *parent)
+MymapMainWindow::MymapMainWindow(User&user,QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MymapMainWindow)
+    , ui(new Ui::MymapMainWindow),user(user)
 {
     ui->setupUi(this);
     this->setWindowTitle("地图编辑器");
@@ -225,31 +226,33 @@ void MymapMainWindow::on_pushButton_5_clicked()
 
 void MymapMainWindow::on_pushButton_6_clicked()
 {
-    subWindow *first = new subWindow();
+    //subWindow *first = new subWindow(user);
     subWindow::open = true;
-    first -> setarraydata(Mymap::mymap);
+    MainWindow::m_subWindow -> setarraydata(Mymap::mymap);
     this -> close();
     delete this;
-    first -> show();
+    MainWindow::m_subWindow -> show();
 }
 
 
 void MymapMainWindow::on_pushButton_7_clicked()
 {
-    subWindow *first = new subWindow();
+    //subWindow *first = new subWindow(user);
     this -> close();
     delete this;
-    first -> show();
+    MainWindow::m_subWindow -> show();
 }
 
 
 void MymapMainWindow::on_pushButton_8_clicked()
 {
-    subWindow *first = new subWindow();
+
+    //subWindow *first = new subWindow(user);
+    //MainWindow::m_subWindow=new subWindow(user);
     subWindow::save = true;
-    first -> setarraydata(Mymap::mymap);
+    MainWindow::m_subWindow -> setarraydata(Mymap::mymap);
     this -> close();
     delete this;
-    first -> show();
+    //MainWindow::m_subWindow -> show();
 }
 

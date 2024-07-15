@@ -6,6 +6,9 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QMouseEvent>
+#include"user.h"
+#include"database.h"
+#include"mainwindow.h"
 
 namespace Ui {
 class MymapMainWindow;
@@ -16,7 +19,7 @@ class MymapMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MymapMainWindow(QWidget *parent = nullptr);
+    explicit MymapMainWindow(User&user,QWidget *parent = nullptr);
     ~MymapMainWindow();
     Mymap mymap;
     QPixmap brick;
@@ -35,6 +38,7 @@ public:
     int mouseposition_y;
     int pre_mouseposition_x;
     int pre_mouseposition_y;
+    User user;
 
 private slots:
     void on_pushButton_clicked();

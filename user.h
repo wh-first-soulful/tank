@@ -8,11 +8,11 @@ class User
 {
 public:
     static User* getInstance(){
-        if (!user) {
+    if (!user) {
             user = new User;
         }
         return user;
-    }
+}
     User(){}
     User(const QString &name, int coins);
 
