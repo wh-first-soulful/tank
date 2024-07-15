@@ -24,7 +24,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="resources.qrc">:/pic/item2.jpg</pixmap>
+          <pixmap resource="resources.qrc">:/pic/item33.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -34,14 +34,14 @@
        <item>
         <widget class="QPushButton" name="buy2">
          <property name="text">
-          <string>购买</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="equip2">
          <property name="text">
-          <string>装备</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -57,7 +57,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="resources.qrc">:/pic/item1.jpg</pixmap>
+          <pixmap resource="resources.qrc">:/pic/item22.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -67,14 +67,14 @@
        <item>
         <widget class="QPushButton" name="buy1">
          <property name="text">
-          <string>购买</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="equip1">
          <property name="text">
-          <string>装备</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -90,21 +90,24 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="resources.qrc">:/pic/item4.jpg</pixmap>
+          <pixmap resource="resources.qrc">:/pic/item44.jpg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="buy4">
          <property name="text">
-          <string>购买</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="equip4">
          <property name="text">
-          <string>装备</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -120,7 +123,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="resources.qrc">:/pic/item3.jpg</pixmap>
+          <pixmap resource="resources.qrc">:/pic/item11.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -130,14 +133,14 @@
        <item>
         <widget class="QPushButton" name="buy3">
          <property name="text">
-          <string>购买</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="equip3">
          <property name="text">
-          <string>装备</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -154,7 +157,7 @@
     <item row="1" column="2">
      <widget class="QPushButton" name="return_2">
       <property name="text">
-       <string>return</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -172,7 +175,7 @@
      <x>0</x>
      <y>0</y>
      <width>575</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>

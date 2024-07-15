@@ -2,9 +2,11 @@
 #include "ui_shopwindow.h"
 #include <QVBoxLayout>
 #include<QHBoxLayout>
-#include <QMessageBox>
+#include<QMessageBox>
 #include<QPixmap>
 #include<QDebug>
+#include<QColor>
+#include<QFont>
 #include"subwindow.h"
 #include"mainwindow.h"
 #include"ui_shopwindow.h"
@@ -14,13 +16,72 @@ ShopWindow::ShopWindow(User& user, QMainWindow *parent) :
 {
     setMinimumSize(1500, 900);
     setMaximumSize(1500, 900);
+    QPixmap pixmap = QPixmap(":/pic/shopcover.png").scaled(this->size());
+    palette.setBrush(QPalette::Window, QBrush(pixmap));
+    this->setPalette( palette );
     ui->setupUi(this);
-    ui->buy1->setText(user.hasBoughtItem("Item 1") ? "已购买" : "购买");
-    ui->buy2->setText(user.hasBoughtItem("Item 2") ? "已购买" : "购买");
-    ui->buy3->setText(user.hasBoughtItem("Item 3") ? "已购买" : "购买");
-    ui->buy4->setText(user.hasBoughtItem("Item 4") ? "已购买" : "购买");
+    if(user.hasBoughtItem("Item 1"))
+    {
+        ui->buy1->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy1->setFixedSize(QSize(400,25));
+    }
+    else
+    {
+        ui->buy1->setStyleSheet("QPushButton{border-image:url(:/pic/buy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/buy2.png);}" //鼠标悬浮
+                                );
+        ui->buy1->setFixedSize(QSize(400,25));
+    }
+    if(user.hasBoughtItem("Item 2"))
+    {
+        ui->buy2->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy2->setFixedSize(QSize(400,25));
+    }
+    else
+    {
+        ui->buy2->setStyleSheet("QPushButton{border-image:url(:/pic/buy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/buy2.png);}" //鼠标悬浮
+                                );
+        ui->buy2->setFixedSize(QSize(400,25));
+    }
+    if(user.hasBoughtItem("Item 3"))
+    {
+        ui->buy3->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy3->setFixedSize(QSize(400,25));
+    }
+    else
+    {
+        ui->buy3->setStyleSheet("QPushButton{border-image:url(:/pic/buy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/buy2.png);}" //鼠标悬浮
+                                );
+        ui->buy3->setFixedSize(QSize(400,25));
+    }
+    if(user.hasBoughtItem("Item 4"))
+    {
+        ui->buy4->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy4->setFixedSize(QSize(400,25));
+    }
+    else
+    {
+        ui->buy4->setStyleSheet("QPushButton{border-image:url(:/pic/buy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/buy2.png);}" //鼠标悬浮
+                                );
+        ui->buy4->setFixedSize(QSize(400,25));
+    }
     updateEquippedItemDisplay();
     updateCoinsDisplay();
+    ui->return_2->setStyleSheet("QPushButton{border-image:url(:/pic/shopreturn1.png);}" //正常
+                            "QPushButton:hover{border-image:url(:/pic/return2.png);}" //鼠标悬浮
+                            );
+    ui->return_2->setFixedSize(QSize(100,25));
 }
 
 ShopWindow::~ShopWindow()
@@ -36,15 +97,110 @@ void ShopWindow::updateCoinsDisplay()
 {
     qDebug()<<user.coins;
     ui->label_5->setText("Coins: " + QString::number(user.getCoins()));
+    QFont font = ui -> label_5 -> font();
+    QColor color(Qt::white);
+    font.setPointSize(14);
+    ui -> label_5 -> setFont(font);
+    ui -> label_5 -> setStyleSheet("color:#FFFFFF");
 }
 
 void ShopWindow::updateEquippedItemDisplay()
 {
-    ui->equip1->setText(user.getEquippedItem() == "Item 1" ? "已装备" : "装备");
-    ui->equip2->setText(user.getEquippedItem() == "Item 2" ? "已装备" : "装备");
-    ui->equip3->setText(user.getEquippedItem() == "Item 3" ? "已装备" : "装备");
-    ui->equip4->setText(user.getEquippedItem() == "Item 4" ? "已装备" : "装备");
-
+    if(user.getEquippedItem() == "Item 1")
+    {
+        ui->equip1->setStyleSheet("QPushButton{border-image:url(:/pic/haveequip1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/haveequip2.png);}" //鼠标悬浮
+                                );
+        ui->equip1->setFixedSize(QSize(400,25));
+        ui->equip2->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip2->setFixedSize(QSize(400,25));
+        ui->equip3->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip3->setFixedSize(QSize(400,25));
+        ui->equip4->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip4->setFixedSize(QSize(400,25));
+    }
+    else if(user.getEquippedItem() == "Item 2")
+    {
+        ui->equip1->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip1->setFixedSize(QSize(400,25));
+        ui->equip2->setStyleSheet("QPushButton{border-image:url(:/pic/haveequip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/haveequip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip2->setFixedSize(QSize(400,25));
+        ui->equip3->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip3->setFixedSize(QSize(400,25));
+        ui->equip4->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip4->setFixedSize(QSize(400,25));
+    }
+    else if(user.getEquippedItem() == "Item 3")
+    {
+        ui->equip1->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip1->setFixedSize(QSize(400,25));
+        ui->equip2->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip2->setFixedSize(QSize(400,25));
+        ui->equip3->setStyleSheet("QPushButton{border-image:url(:/pic/haveequip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/haveequip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip3->setFixedSize(QSize(400,25));
+        ui->equip4->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip4->setFixedSize(QSize(400,25));
+    }
+    else if(user.getEquippedItem() == "Item 4")
+    {
+        ui->equip1->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip1->setFixedSize(QSize(400,25));
+        ui->equip2->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip2->setFixedSize(QSize(400,25));
+        ui->equip3->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip3->setFixedSize(QSize(400,25));
+        ui->equip4->setStyleSheet("QPushButton{border-image:url(:/pic/haveequip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/haveequip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip4->setFixedSize(QSize(400,25));
+    }
+    else
+    {
+        ui->equip1->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip1->setFixedSize(QSize(400,25));
+        ui->equip2->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip2->setFixedSize(QSize(400,25));
+        ui->equip3->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip3->setFixedSize(QSize(400,25));
+        ui->equip4->setStyleSheet("QPushButton{border-image:url(:/pic/equip1.png);}" //正常
+                                  "QPushButton:hover{border-image:url(:/pic/equip2.png);}" //鼠标悬浮
+                                  );
+        ui->equip4->setFixedSize(QSize(400,25));
+    }
 }
 
 bool ShopWindow::confirmPurchase(const QString &itemName, int cost)
@@ -93,7 +249,7 @@ void ShopWindow::on_buy1_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
-    ui->buy1->setText(user.hasBoughtItem("Item 1") ? "已购买" : "购买");
+    //ui->buy1->setText(user.hasBoughtItem("Item 1") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
 }
@@ -114,7 +270,7 @@ void ShopWindow::on_buy2_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
-    ui->buy2->setText(user.hasBoughtItem("Item 2") ? "已购买" : "购买");
+    //ui->buy2->setText(user.hasBoughtItem("Item 2") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
 
@@ -133,7 +289,7 @@ void ShopWindow::on_buy3_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
-    ui->buy3->setText(user.hasBoughtItem("Item 3") ? "已购买" : "购买");
+    //ui->buy3->setText(user.hasBoughtItem("Item 3") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
 }
@@ -151,7 +307,7 @@ void ShopWindow::on_buy4_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
-    ui->buy4->setText(user.hasBoughtItem("Item 4") ? "已购买" : "购买");
+    //ui->buy4->setText(user.hasBoughtItem("Item 4") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
 

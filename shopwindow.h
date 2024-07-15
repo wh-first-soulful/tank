@@ -26,6 +26,7 @@ public:
     QPixmap item2Icon;
     QPixmap item3Icon;
     QPixmap item4Icon;
+    QPalette palette;
 
 
 private slots:
