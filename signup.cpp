@@ -9,10 +9,7 @@ Signup::Signup(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("注册");
-    QPixmap *pix = new QPixmap(":/pic/");
-    QSize sz = ui->label_image->size();
-    ui->label_image->setPixmap(pix->scaled(sz));
-}
+
 
 Signup::~Signup()
 {
