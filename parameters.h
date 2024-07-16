@@ -53,4 +53,15 @@
 #define BULLET_FAST 50
 #define BULLET_SLOW 80
 #define TANK_PLAYER 50
+
+#define enemy_died ":/sound/dead_enemy.wav"
+#define player_died ":/sound/dead_player.wav"
+#define bullet_hit_tank ":/sound/hit_tank.wav"
+#define prop_appear ":/sound/prop_appear.wav"
+#define prop_get ":/sound/prop_get.wav"
+#define win_sound ":/sound/win.wav"
+#define lose_sound ":/sound/lose2.wav"
+#define bomb ":/sound/cbomb.wav"
+#define bgm1 ":/sound/background1.wav"
+
 #endif // PARAMETERS_H
