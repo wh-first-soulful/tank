@@ -9,7 +9,7 @@ Signup::Signup(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("注册");
-
+}
 
 Signup::~Signup()
 {
