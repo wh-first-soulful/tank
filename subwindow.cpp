@@ -901,6 +901,21 @@ void subWindow::reload()
         this->tank5_right.load(":/pic/tank7right.png");
     }
 }
+
+void subWindow::on_returnclick_clicked()
+{
+    Database::getInstance()->updateUserCoins(user.name,m.player_gold_num);
+    endflag=0;
+    init();
+    Map m;
+    startflag=0;
+    ui->pushButton->show();
+    ui->pushButton_2->show();
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
+    ui->pushButton_5->show();
+    init();
+}
 void subWindow::keyPressEvent(QKeyEvent *event)
 {
     if(players[0]!=NULL)
