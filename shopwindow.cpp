@@ -102,6 +102,7 @@ void ShopWindow::updateCoinsDisplay()
     font.setPointSize(14);
     ui -> label_5 -> setFont(font);
     ui -> label_5 -> setStyleSheet("color:#FFFFFF");
+
 }
 
 void ShopWindow::updateEquippedItemDisplay()
@@ -249,6 +250,14 @@ void ShopWindow::on_buy1_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
+    if(user.hasBoughtItem("Item 1"))
+    {
+        ui->buy1->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy1->setFixedSize(QSize(400,25));
+    }
+
     //ui->buy1->setText(user.hasBoughtItem("Item 1") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
@@ -271,6 +280,14 @@ void ShopWindow::on_buy2_clicked()
         }
     }
     //ui->buy2->setText(user.hasBoughtItem("Item 2") ? "已购买" : "购买");
+    if(user.hasBoughtItem("Item 2"))
+    {
+        ui->buy2->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy2->setFixedSize(QSize(400,25));
+    }
+
     updateCoinsDisplay();
     updateDatabase();
 
@@ -289,6 +306,13 @@ void ShopWindow::on_buy3_clicked()
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
     }
+    if(user.hasBoughtItem("Item 3"))
+    {
+        ui->buy3->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy3->setFixedSize(QSize(400,25));
+    }
     //ui->buy3->setText(user.hasBoughtItem("Item 3") ? "已购买" : "购买");
     updateCoinsDisplay();
     updateDatabase();
@@ -306,6 +330,13 @@ void ShopWindow::on_buy4_clicked()
         } else {
             QMessageBox::warning(this, "Insufficient Coins", "You don't have enough coins ");
         }
+    }
+    if(user.hasBoughtItem("Item 4"))
+    {
+        ui->buy4->setStyleSheet("QPushButton{border-image:url(:/pic/havebuy1.png);}" //正常
+                                "QPushButton:hover{border-image:url(:/pic/havebuy2.png);}" //鼠标悬浮
+                                );
+        ui->buy4->setFixedSize(QSize(400,25));
     }
     //ui->buy4->setText(user.hasBoughtItem("Item 4") ? "已购买" : "购买");
     updateCoinsDisplay();
