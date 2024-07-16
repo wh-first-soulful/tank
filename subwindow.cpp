@@ -95,7 +95,7 @@ subWindow::subWindow(User&user,QWidget *parent) :
     endflag=0;
     gradesflag=0;
     winflag=0;
-
+    insertflag=0;
     timer1 = new QTimer(this);
     timer2 = new QTimer(this);
     timer3 = new QTimer(this);
@@ -114,6 +114,13 @@ subWindow::subWindow(User&user,QWidget *parent) :
     connect(timer4,&QTimer::timeout,this,&subWindow::bullet_move_fast);
     connect(timer1,&QTimer::timeout,this,&subWindow::showgrades);
     connect(timer5,&QTimer::timeout,this,&subWindow::tank_move_player);
+
+
+    static QSoundEffect *Bgm1= new QSoundEffect(this);
+    Bgm1->setSource(QUrl::fromLocalFile(bgm1));//添加资源
+    Bgm1->setLoopCount(QSoundEffect::Infinite);
+    Bgm1->play();
+
 
     //connect(timer1,&QTimer::timeout,this,&subWindow::keyPressEvent);
     init();
@@ -217,6 +224,7 @@ void subWindow::init()
         this->tank5_left.load(":/pic/dlc1left.png");
         this->tank5_right.load(":/pic/dlc1right.png");
         players[0]->bullet_type=1;
+        players[0]->damage=2;
         //players[0]->bullet_sleep_time=30;
     }
     else if(cur=="Item 2")
@@ -226,6 +234,7 @@ void subWindow::init()
         this->tank5_left.load(":/pic/dlc2left.png");
         this->tank5_right.load(":/pic/dlc2right.png");
         players[0]->bullet_type=2;
+        players[0]->damage=2;
     }
     else if(cur=="Item 3")
     {
@@ -234,6 +243,7 @@ void subWindow::init()
         this->tank5_left.load(":/pic/dlc3left.png");
         this->tank5_right.load(":/pic/dlc3right.png");
         players[0]->bullet_type=3;
+        players[0]->damage=2;
     }
     else if(cur=="Item 4")
     {
@@ -242,12 +252,14 @@ void subWindow::init()
         this->tank5_left.load(":/pic/dlc4left.png");
         this->tank5_right.load(":/pic/dlc4right.png");
         players[0]->bullet_type=4;
+        players[0]->damage=3;
     }
     else{
         this->tank5_up.load(":/pic/tank7up.png");
         this->tank5_dn.load(":/pic/tank7dn.png");
         this->tank5_left.load(":/pic/tank7left.png");
         this->tank5_right.load(":/pic/tank7right.png");
+        players[0]->damage=1;
     }
 }
 
@@ -314,13 +326,14 @@ void subWindow::bullet_move(int speed)
                                     for(int k=0;k<4;k++)
                                         score_2 += 100 * (k + 1)*kill_2[k];
                                 }
-
+                                losesound();
                                 endflag=1;
                                 winflag=0;
                             }
                         }
                         else
                         {
+                            playerdied();
                             players[pos - 20]->delete_tank();
                             players[pos - 20]->pos_x = 15 + (pos - 20) * 10;
                             players[pos - 20]->pos_y = 27;
@@ -467,9 +480,11 @@ void subWindow::bullet_move(int speed)
                         //clock++;
                         break;
                     case 1://tank
+                        propget();
                         players[i]->life++;
                         break;
                     case 2://bomb
+                        bombsound();
                         for (int j = 0; j < 3; j++)//修改了敌人小于3时闪退的bug
                         {
                             if(enemies[j]!=NULL)
@@ -508,7 +523,8 @@ void subWindow::bullet_move(int speed)
                     int pos = players[i]->bullets->hurt_id;
                     if (pos >= 10 && pos < 20)//enemy tanks
                     {
-                        if (enemies[pos - 10]->life <= 1)
+                        enemies[pos - 10]->life-=players[i]->damage;
+                        if (enemies[pos - 10]->life <= 0)
                         {
                             if (i == 0)
                             {
@@ -529,9 +545,13 @@ void subWindow::bullet_move(int speed)
                             delete enemies[pos - 10];
                             enemies[pos - 10] = NULL;
                             enemies_num--;
+                            enemydied();
                         }
                         else
-                            enemies[pos - 10]->life--;
+                        {
+                            bullethittank();
+                            enemies[pos - 10]->life-=players[i]->damage;
+                        }
                     }
                     else if(pos>=30&&pos<40)//enemy bullet
                     {
@@ -578,7 +598,10 @@ void subWindow::bullet_move(int speed)
     {
     case 9:
         if(tools_exist[1]==0)
+        {
             tools_exist[1] = 1;
+            propappear();\
+        }
         break;
     case 4:
         if (tools_exist[1] == 0)
@@ -586,7 +609,10 @@ void subWindow::bullet_move(int speed)
         break;
     case 7:
         if (tools_exist[2] == 0)
+        {
             tools_exist[2] = 1;
+            propappear();
+        }
         break;
     }
     for (int i = 0; i < 3; i++)
@@ -619,6 +645,7 @@ void subWindow::bullet_move(int speed)
                 score += 100*(k+1)*kill[k];
             for(int k=0;k<4;k++)
                 score_2 += 100 * (k + 1)*kill_2[k];
+            losesound();
         }
         endflag=1;
         Map::map_sum=2;
@@ -639,24 +666,41 @@ void subWindow::bullet_move(int speed)
 
     if(enemies_num==0)
     {
-        if(Map::map_sum==2)
+        if(subWindow::open == true)
         {
-            //将新的地图数据导入
-            m.mapnew1();
-            Map::map_sum--;
-            //初始化
-            init();
-            // Map::map_sum--;
-        }
-        else if(Map::map_sum==1)
-        {
-            m.mapnew2();
-            Map::map_sum--;
-            init();
-        }
-        else{
+            if(!endflag)
+            {
+                for(int k=0;k<4;k++)
+                    score += 100 * (k + 1)*kill[k];
+                for(int k=0;k<4;k++)
+                    score_2 += 100 * (k + 1)*kill_2[k];
+            }
             endflag=1;
             winflag=1;
+        }
+        else
+        {
+            if(Map::map_sum==2)
+            {
+                //将新的地图数据导入
+                m.mapnew1();
+                Map::map_sum--;
+                //初始化
+                init();
+                // Map::map_sum--;
+            }
+            else if(Map::map_sum==1)
+            {
+                m.mapnew2();
+                Map::map_sum--;
+                init();
+            }
+            else{
+                endflag=1;
+                winflag=1;
+                winsound();
+                Map::map_sum=2;
+            }
         }
     }
     update();
@@ -817,9 +861,20 @@ void subWindow::paintEvent(QPaintEvent *event)
         }
         painter.drawText(100,600,tr("Final Score:"));
         painter.drawText(350,600,QString::number(score));
+        if(!insertflag&&mode==1){
+            Database::getInstance()->updateMaxScore(Database::getInstance()->getUserName(),score);
+            Database::getInstance()->insertScore(score,score_2,Database::getInstance()->getUserName());
+            insertflag=true;
+        }
 
         if(mode==2)
         {
+            if(!insertflag){
+
+                Database::getInstance()->insertScore(score,score_2,Database::getInstance()->getUserName());
+                Database::getInstance()->updateTwoPlayerMaxScore(Database::getInstance()->getUserName(),score_2);
+                insertflag=true;
+            }
             painter.drawText(800,100,tr("Player 2:"));
             painter.drawPixmap(850, 150, 60, 60,tank1_up);
             painter.drawPixmap(850, 250, 60, 60,tank2_up);
@@ -835,9 +890,9 @@ void subWindow::paintEvent(QPaintEvent *event)
             painter.drawText(800,600,tr("Final Score:"));
             painter.drawText(1050,600,QString::number(score_2));
         }
-        if(winflag)
-            painter.drawPixmap(600, 700, 60, 60,tank2_up);
-        else
+        if(!winflag)
+           // painter.drawPixmap(600, 700, 60, 60,tank2_up);
+
             painter.drawPixmap(500, 700,400, 100,gameover_pic);
     }
     else
@@ -868,6 +923,7 @@ void subWindow::reload()
         this->tank5_left.load(":/pic/dlc1left.png");
         this->tank5_right.load(":/pic/dlc1right.png");
         players[0]->bullet_type=1;
+        players[0]->damage=2;
         //players[0]->bullet_sleep_time=30;
     }
     else if(cur=="Item 2")
@@ -877,6 +933,7 @@ void subWindow::reload()
         this->tank5_left.load(":/pic/dlc2left.png");
         this->tank5_right.load(":/pic/dlc2right.png");
         players[0]->bullet_type=2;
+        players[0]->damage=2;
     }
     else if(cur=="Item 3")
     {
@@ -885,6 +942,7 @@ void subWindow::reload()
         this->tank5_left.load(":/pic/dlc3left.png");
         this->tank5_right.load(":/pic/dlc3right.png");
         players[0]->bullet_type=3;
+        players[0]->damage=2;
     }
     else if(cur=="Item 4")
     {
@@ -893,12 +951,14 @@ void subWindow::reload()
         this->tank5_left.load(":/pic/dlc4left.png");
         this->tank5_right.load(":/pic/dlc4right.png");
         players[0]->bullet_type=4;
+        players[0]->damage=3;
     }
     else{
         this->tank5_up.load(":/pic/tank7up.png");
         this->tank5_dn.load(":/pic/tank7dn.png");
         this->tank5_left.load(":/pic/tank7left.png");
         this->tank5_right.load(":/pic/tank7right.png");
+        players[0]->damage=1;
     }
 }
 
@@ -906,6 +966,12 @@ void subWindow::on_returnclick_clicked()
 {
     Database::getInstance()->updateUserCoins(user.name,m.player_gold_num);
     endflag=0;
+    insertflag=0;
+    //set background
+    QPixmap pixmap = QPixmap(":/pic/cover1.png").scaled(this->size());
+    setMinimumSize(1500, 900); setMaximumSize(1500, 900);
+    palette.setBrush(QPalette::Window, QBrush(pixmap));
+    this->setPalette( palette );
     init();
     Map m;
     startflag=0;
@@ -1059,4 +1125,70 @@ void subWindow::closeEvent(QCloseEvent *event)
     init();
 }
 
+void subWindow::enemydied()
+{
+    QSoundEffect * Enemy_died = new QSoundEffect(this);//创建对象
+    Enemy_died->setSource(QUrl::fromLocalFile(enemy_died));//添加资源
+    Enemy_died->setLoopCount(QSoundEffect::Loading);
+    Enemy_died->play();
+}
+
+void subWindow::playerdied()
+{
+    QSoundEffect * Player_died = new QSoundEffect(this);//创建对象
+    Player_died->setSource(QUrl::fromLocalFile(player_died));//添加资源
+    Player_died->setLoopCount(QSoundEffect::Loading);
+    Player_died->play();
+}
+
+void subWindow::propget()
+{
+    QSoundEffect * Prop_get = new QSoundEffect(this);//创建对象
+    Prop_get->setSource(QUrl::fromLocalFile(prop_get));//添加资源
+    Prop_get->setLoopCount(QSoundEffect::Loading);
+    Prop_get->play();
+
+}
+
+void subWindow::propappear()
+{
+    QSoundEffect * Prop_appear = new QSoundEffect(this);//创建对象
+    Prop_appear->setSource(QUrl::fromLocalFile(prop_appear));//添加资源
+    Prop_appear->setLoopCount(QSoundEffect::Loading);
+    Prop_appear->play();
+}
+
+void subWindow::bullethittank()
+{
+    QSoundEffect * Bullet_hit_tank = new QSoundEffect(this);//创建对象
+    Bullet_hit_tank->setSource(QUrl::fromLocalFile(bullet_hit_tank));//添加资源
+    Bullet_hit_tank->setLoopCount(QSoundEffect::Loading);
+    Bullet_hit_tank->play();
+}
+
+void subWindow::losesound()
+{
+    QSoundEffect * Lose_sound = new QSoundEffect(this);//创建对象
+    Lose_sound->setSource(QUrl::fromLocalFile(lose_sound));//添加资源
+    Lose_sound->setLoopCount(QSoundEffect::Loading);
+    Lose_sound->play();
+
+}
+
+void subWindow::winsound()
+{
+    QSoundEffect * Win_sound = new QSoundEffect(this);//创建对象
+    Win_sound->setSource(QUrl::fromLocalFile(win_sound));//添加资源
+    Win_sound->setLoopCount(QSoundEffect::Loading);
+    Win_sound->play();
+
+}
+
+void subWindow::bombsound()
+{
+    QSoundEffect * Bomb = new QSoundEffect(this);//创建对象
+    Bomb->setSource(QUrl::fromLocalFile(bomb));//添加资源
+    Bomb->setLoopCount(QSoundEffect::Loading);
+    Bomb->play();
+}
 
