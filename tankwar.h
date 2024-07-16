@@ -144,10 +144,7 @@ public:
     }
     void move();//根据玩家的键盘输入控制玩家坦克的移动
     friend class Bullet;
-    int down_flag;
-    int up_flag;
-    int left_flag;
-    int right_flag;
+    int bullet_type;
 };
 
 #endif // TANKWAR_H

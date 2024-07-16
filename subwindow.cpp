@@ -139,6 +139,7 @@ subWindow::~subWindow()
 
 void subWindow::init()
 {
+    m.player_gold_num=Database::getInstance()->getUserCoins(user.name);
     for (int i = 0; i < 5; i++)
         tools_exist[i] = 0;
     //clock
@@ -197,29 +198,57 @@ void subWindow::init()
     }
     Player *p1 = new Player(0,15, WIDTH-3, 20);
     Player *p2 = new Player(-1,27, WIDTH-3, 21);
+
     players[0] = p1;
+    p1->bullet_type=0;
     if(mode==2)
+    {
         players[1]=p2;
+        p2->bullet_type=0;
+    }
     else
         players[1] = NULL;
-}
-
-void subWindow::on_returnclick_clicked()
-{
-    endflag=0;
-    init();
-    Map m;
-    startflag=0;
-    ui->pushButton->show();
-    ui->pushButton_2->show();
-    ui->pushButton_3->hide();
-    ui->pushButton_4->hide();
-    ui->pushButton_5->show();
-    init();
-    QPixmap pixmap = QPixmap(":/pic/cover1.png").scaled(this->size());
-    setMinimumSize(1500, 900); setMaximumSize(1500, 900);
-    palette.setBrush(QPalette::Window, QBrush(pixmap));
-    this->setPalette( palette );
+    QString cur=Database::getInstance()->getUserEquippedItem(user.name);
+    qDebug()<<"Reload "<<Database::getInstance()->getUserEquippedItem(user.name);
+    if(cur=="Item 1")
+    {
+        this->tank5_up.load(":/pic/dlc1up.png");
+        this->tank5_dn.load(":/pic/dlc1dn.png");
+        this->tank5_left.load(":/pic/dlc1left.png");
+        this->tank5_right.load(":/pic/dlc1right.png");
+        players[0]->bullet_type=1;
+        //players[0]->bullet_sleep_time=30;
+    }
+    else if(cur=="Item 2")
+    {
+        this->tank5_up.load(":/pic/dlc2up.png");
+        this->tank5_dn.load(":/pic/dlc2dn.png");
+        this->tank5_left.load(":/pic/dlc2left.png");
+        this->tank5_right.load(":/pic/dlc2right.png");
+        players[0]->bullet_type=2;
+    }
+    else if(cur=="Item 3")
+    {
+        this->tank5_up.load(":/pic/dlc3up.png");
+        this->tank5_dn.load(":/pic/dlc3dn.png");
+        this->tank5_left.load(":/pic/dlc3left.png");
+        this->tank5_right.load(":/pic/dlc3right.png");
+        players[0]->bullet_type=3;
+    }
+    else if(cur=="Item 4")
+    {
+        this->tank5_up.load(":/pic/dlc4up.jpg");
+        this->tank5_dn.load(":/pic/dlc4dn.png");
+        this->tank5_left.load(":/pic/dlc4left.png");
+        this->tank5_right.load(":/pic/dlc4right.png");
+        players[0]->bullet_type=4;
+    }
+    else{
+        this->tank5_up.load(":/pic/tank7up.png");
+        this->tank5_dn.load(":/pic/tank7dn.png");
+        this->tank5_left.load(":/pic/tank7left.png");
+        this->tank5_right.load(":/pic/tank7right.png");
+    }
 }
 
 void subWindow::tank_move_slow()
@@ -832,12 +861,44 @@ void subWindow::reload()
 {
     QString cur=Database::getInstance()->getUserEquippedItem(user.name);
     qDebug()<<"Reload "<<Database::getInstance()->getUserEquippedItem(user.name);
-    if(cur=="Item 1"){
-        this->tank5_up.load(":/pic/tank7up.png");
-    }
-    else
+    if(cur=="Item 1")
     {
+        this->tank5_up.load(":/pic/dlc1up.png");
+        this->tank5_dn.load(":/pic/dlc1dn.png");
+        this->tank5_left.load(":/pic/dlc1left.png");
+        this->tank5_right.load(":/pic/dlc1right.png");
+        players[0]->bullet_type=1;
+        //players[0]->bullet_sleep_time=30;
+    }
+    else if(cur=="Item 2")
+    {
+        this->tank5_up.load(":/pic/dlc2up.png");
+        this->tank5_dn.load(":/pic/dlc2dn.png");
+        this->tank5_left.load(":/pic/dlc2left.png");
+        this->tank5_right.load(":/pic/dlc2right.png");
+        players[0]->bullet_type=2;
+    }
+    else if(cur=="Item 3")
+    {
+        this->tank5_up.load(":/pic/dlc3up.png");
+        this->tank5_dn.load(":/pic/dlc3dn.png");
+        this->tank5_left.load(":/pic/dlc3left.png");
+        this->tank5_right.load(":/pic/dlc3right.png");
+        players[0]->bullet_type=3;
+    }
+    else if(cur=="Item 4")
+    {
+        this->tank5_up.load(":/pic/dlc4up.jpg");
+        this->tank5_dn.load(":/pic/dlc4dn.png");
+        this->tank5_left.load(":/pic/dlc4left.png");
+        this->tank5_right.load(":/pic/dlc4right.png");
+        players[0]->bullet_type=4;
+    }
+    else{
         this->tank5_up.load(":/pic/tank7up.png");
+        this->tank5_dn.load(":/pic/tank7dn.png");
+        this->tank5_left.load(":/pic/tank7left.png");
+        this->tank5_right.load(":/pic/tank7right.png");
     }
 }
 void subWindow::keyPressEvent(QKeyEvent *event)
