@@ -1,5 +1,5 @@
 ﻿#include "login.h"
-#include "ui_Login.h"
+#include "ui_login.h"
 #include "signup.h"
 
 #include "mainwindow.h"
@@ -11,6 +11,7 @@ Login::Login(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("登录");
+
 
     /*QPixmap *pix = new QPixmap(":/pic/");
     QSize sz = ui->label_image->size();
@@ -31,7 +32,13 @@ Login::~Login()
     delete ui;
 }
 
-
+void Login::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+        QPalette palette = this->palette();
+        palette.setBrush(QPalette::Window, QPixmap(":/image/login/").scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        this->setPalette(palette);
+}
 
 void Login::on_btn_signin_clicked()
 {
@@ -44,13 +51,12 @@ void Login::on_btn_signin_clicked()
     if(!result)
     {
         qDebug()<<"Login error";
-        //QMessageBox::information(this,"登录认证","登录失败,账户或者密码错误");
+        QMessageBox::information(this,"登录认证","登录失败,账户或者密码错误");
 
     }
     else
     {
         qDebug()<<"Login success";
-
         QMessageBox::information(this,"登录认证","登陆成功!");
         int coins = Database::getInstance()->getUserCoins(username);
         //User user(username, coins);
