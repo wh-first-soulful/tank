@@ -8,6 +8,9 @@
 #include "tankwar.h"
 #include"user.h"
 #include <QTimer>
+
+#include<QMediaPlayer>
+#include <QSoundEffect>
 namespace Ui {
 class subWindow;
 }
@@ -30,6 +33,16 @@ public:
     Map m;
     User user;
     QPalette palette;
+
+    void propget();
+    void propappear();
+    void enemydied();
+    void playerdied();
+    void bullethittank();
+    //void bullethitwall();
+    void losesound();
+    void winsound();
+    void bombsound();
 
 private slots:
     void on_returnclick_clicked();
@@ -129,7 +142,7 @@ private:
     bool endflag;
     bool gradesflag;
     bool winflag;
-
+    bool insertflag;
 };
 
 #endif // SUBWINDOW_H
